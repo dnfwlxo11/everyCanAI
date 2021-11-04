@@ -1,0 +1,7 @@
+# 학습 이미지 데이터 ignore
+# calorie DB ignore
+# model 파일 ignore
+
+train_images/
+calorieDB/
+models/
