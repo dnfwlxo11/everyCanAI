@@ -38,5 +38,5 @@ def run_inference_on_image(imageBinary):
         for node_id in top_k:
             classes.append(labels[node_id])
             scores.append(predictions[node_id])
-        
+
         return {"classes": classes, "scores": scores}

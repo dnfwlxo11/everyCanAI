@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 
 import json
-from flask import Flask, request
+from flask import Flask, request, render_template
 from werkzeug.utils import secure_filename
 import inference
+import base64
 from flask_mail import Mail, Message
+import config
 
 app = Flask(__name__)
 
@@ -14,18 +16,11 @@ app.config['JSON_AS_ASCII'] = False
 calorieDBPath = './calorieDB/food_cal.json'
 
 # Email 설정
-mail_settings = {
-    "DEBUG": True,
-    "MAIL_SERVER": 'smtp.gmail.com',
-    "MAIL_PORT": 465,
-    "MAIL_USE_SSL": True,
-    "MAIL_USERNAME": 'email',
-    "MAIL_PASSWORD": 'password'
-}
+mail_settings = config.getMailInfo()
 
 app.config.update(mail_settings)
 
-# args : (classes 배열, scores 배열, 원하는 score의 정도
+# args : (classes 배열, scores 배열, 원하는 score의 정도)
 def parseCalorieDB(classes, scores, score):
     with open(calorieDBPath, 'r') as jsonFile:
         calData = ''
@@ -40,6 +35,7 @@ def parseCalorieDB(classes, scores, score):
 
         return parseResult
 
+# sender = email, receiver = email, content = string or object
 def send_email(senders, receiver, content):
     try:
         mail = Mail(app)
@@ -54,9 +50,7 @@ def send_email(senders, receiver, content):
 def hello():
     if request.method == 'GET':
         try:
-            print('서버가 정상적으로 동작중')
-
-            return {'success': True, 'msg': '플라스크 http 통신 테스트'}
+            return render_template('index.html')
         except Exception as e:
             return {'success': False, 'msg': 'GET 요청 테스트 중 에러가 발생했습니다.', 'error': e}
 
@@ -64,10 +58,13 @@ def hello():
 def sendMail():
     if request.method == 'POST':
         try:
-            body = request.get_json()
+            body = json.loads(request.get_data().decode('utf-8'))
             senders = body['sender']
             receiver = body['reciver']
+
             content = body['content']
+            content = ('코멘트 : {}\n음식명 : {}\n칼로리 : {}\n정확도 : {}').format(content['msg'], content['food'], content['kcal'], content['conf'])
+
             receiver = receiver.split(',')
         
             for i in range(len(receiver)):
@@ -100,7 +97,13 @@ def saveImage():
 def getImage():
     if request.method == 'POST':
         try:
-            data = request.files['file'].read()
+            # 웹 버전
+            data = request.get_data().decode('utf-8').replace('data:image/png;base64,', '')
+            data = base64.b64decode(data)
+
+            # Api 버전
+            # data = request.files['file'].read()
+
             predict = inference.run_inference_on_image(data)
             result = parseCalorieDB(predict['classes'], predict['scores'], 0.3)
 

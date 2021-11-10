@@ -5,3 +5,5 @@
 train_images/
 calorieDB/
 models/
+config.py
+__pycache__
