@@ -7,8 +7,11 @@ import inference
 import base64
 from flask_mail import Mail, Message
 import config
+from flask_cors import CORS
 
 app = Flask(__name__)
+cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
+
 
 # 한글 깨짐 해결 설정
 app.config['JSON_AS_ASCII'] = False
@@ -46,15 +49,31 @@ def send_email(senders, receiver, content):
     except Exception:
         return False
 
-@app.route('/', methods=['GET'])
+@app.route('/api', methods=['GET'])
 def hello():
     if request.method == 'GET':
         try:
-            return render_template('index.html')
+            return {'success': True, 'msg': '정상적으로 서버 동작 중'}
         except Exception as e:
             return {'success': False, 'msg': 'GET 요청 테스트 중 에러가 발생했습니다.', 'error': e}
 
-@app.route('/mail', methods=['POST'])
+@app.route('/api/upload', methods=['POST'])
+def fileUpload():
+    if request.method == 'POST':
+        try:
+            return {'success': True, 'msg': '서버에 학습 이미지 업로드가 완료되었습니다.'}
+        except Exception as e:
+            return {'success': False, 'msg': '이미지 업로드 중 에러가 발생했습니다.', 'error': e}
+
+@app.route('/api/information', methods=['GET'])
+def modelInfo():
+    if request.method == 'GET':
+        try:
+            return {'success': True, 'info': '레이어 : ~~개, input: [224, 224, 3], 예시'}
+        except Exception as e:
+            return {'success': False}
+
+@app.route('/api/mail', methods=['POST'])
 def sendMail():
     if request.method == 'POST':
         try:
@@ -81,7 +100,7 @@ def sendMail():
         except Exception as e:
             return {'success': False, 'msg': '메일 전송 중 에러가 발생했습니다.', 'error': e}
 
-@app.route('/save', methods=['POST'])
+@app.route('/api/save', methods=['POST'])
 def saveImage():
     if request.method == 'POST':
         try:
@@ -93,7 +112,7 @@ def saveImage():
             return {'success': False, 'msg': '이미지 저장 테스트 중 에러가 발생했습니다.', 'error': e}
 
 
-@app.route('/inference', methods=['POST'])
+@app.route('/api/inference', methods=['POST'])
 def getImage():
     if request.method == 'POST':
         try:

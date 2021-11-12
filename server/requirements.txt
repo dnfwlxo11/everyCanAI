@@ -3,3 +3,4 @@ numpy==1.19.2
 tensorflow==2.6.0
 Werkzeug==2.0.2
 Flask-Mail==0.9.1
+flask-cors==3.0.10
