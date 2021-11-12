@@ -19,9 +19,9 @@
                     </div>
                 </div>
                 <div class="mb-3">
-                    <div class="row">
-                        <div class="col-10">
-                            <div class="card" ref='files'>
+                    <div class="row h-100">
+                        <div class="col-md-10">
+                            <div class="card h-100" ref='files'>
                                 <div class="card-header pb-2">
                                     <div class="row align-items-center">
                                         <div class="col-2 text-left" @click="moveLeftClass">
@@ -33,7 +33,7 @@
                                             <i v-else class="mdi mdi-check" @click="isDisabledClass=true" @blur="isDisabledClass=true"></i>
                                         </div>
                                         <div class="col-2 text-right">
-                                            <i v-if="currIdx==classes.length-1" class="mdi mdi-folder-multiple-plus-outline mr-3" @click="addClass();moveRightClass()"></i>
+                                            <i v-if="currIdx==classes.length-1" class="mdi mdi-folder-multiple-plus-outline mr-3" @click="addClass()"></i>
                                             <i v-else class="mdi mdi-arrow-right" @click="moveRightClass()"></i>
                                             <i class="mdi mdi-delete" @click="deleteClass(currIdx)"></i>
                                         </div>
@@ -52,7 +52,7 @@
                                             <img class="upload-image" :src="file.src" :width='parseInt(cardWidth / 5) - 25'
                                                 :height='parseInt((cardWidth / 5) * 0.56)'>
                                             <div style="position: absolute;top: 0; right:0" @click="handleRemove(index)">
-                                                <i class="mdi mdi-delete"></i>
+                                                <a class="d-block" href="javascript:;"><i class="mdi mdi-delete"></i></a>
                                             </div>
                                         </div>
                                         <div style="float: left;">
@@ -62,7 +62,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-2">
+                        <div class="col-md-2">
                             <div class="card">
                                 <div class="card-header pb-2">
                                     클래스 목록
@@ -104,7 +104,6 @@ export default {
 
     data() {
         return {
-            mode: 'local',
             webCam: null,
             fileList: [[]],
             cardWidth: 0,
@@ -169,7 +168,7 @@ export default {
         },
 
         moveRightClass() {
-            if (this.currIdx < this.classes.length) this.currIdx+=1
+            if (this.currIdx < this.classes.length - 1) this.currIdx+=1
         },
 
         async addFiles(files) {
@@ -181,10 +180,11 @@ export default {
                 tmpArr.push(files[i])
             }
 
-            this.fileList[this.currIdx].concat(tmpArr)
+            this.fileList[this.currIdx] = this.fileList[this.currIdx].concat(tmpArr)
         },
 
         async readFiles(files) {
+
             return new Promise((resolve, reject) => {
                 const reader = new FileReader()
                 reader.onload = async (e) => {
@@ -208,8 +208,10 @@ export default {
 
         addClass() {
             this.classes.push(`Class ${this.createNum + 1}`)
-            this.fileList.push([])
+
+            if (this.classes.length != 1) this.fileList.push([])
             this.createNum += 1
+            this.moveRightClass()
         },
 
         editClassName() {
@@ -258,7 +260,7 @@ html,
     }    
 
     .mdi {
-        font-size: 24px;
+        font-size: 20px;
     }
 
     .mdi-home-outline {

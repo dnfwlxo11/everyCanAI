@@ -1,6 +1,6 @@
 <template>
     <div id="train">
-        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+        <div class="btn-group btn-group-toggle mt-3" data-toggle="buttons">
             <label class="btn btn-outline-primary active">
                 <input type="radio" name="options" id="option1" checked> 로컬
             </label>
@@ -9,17 +9,20 @@
             </label>
         </div>
         <local v-if="mode=='local'"></local>
+        <cam v-else></cam>
     </div>
 </template>
 
 <script>
 import Local from './vues/local'
+import Cam from './vues/cam'
 
 export default {
     name: 'Train',
 
     components: {
-        Local
+        Local,
+        Cam
     },
 
     data() {

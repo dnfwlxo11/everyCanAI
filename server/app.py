@@ -61,6 +61,8 @@ def hello():
 def fileUpload():
     if request.method == 'POST':
         try:
+            data = request.get_data()
+
             return {'success': True, 'msg': '서버에 학습 이미지 업로드가 완료되었습니다.'}
         except Exception as e:
             return {'success': False, 'msg': '이미지 업로드 중 에러가 발생했습니다.', 'error': e}
