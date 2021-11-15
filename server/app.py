@@ -5,9 +5,12 @@ from flask import Flask, request, render_template
 from werkzeug.utils import secure_filename
 import inference
 import base64
-from flask_mail import Mail, Message
 import config
+from flask_mail import Mail, Message
 from flask_cors import CORS
+import os
+import time
+from PIL import Image
 
 app = Flask(__name__)
 cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
@@ -22,6 +25,27 @@ calorieDBPath = './calorieDB/food_cal.json'
 mail_settings = config.getMailInfo()
 
 app.config.update(mail_settings)
+
+def makeDirectory(files):
+    # 현재 시간으로 폴더를 만듦
+    now = time.localtime()
+    dirName = '{}{}{}_{}{}{}'.format(now.tm_year, now.tm_mon, now.tm_mday, now.tm_hour, now.tm_min, now.tm_sec)
+
+    if not os.path.exists('./db/{}'.format(dirName)):
+        os.makedirs('./db/{}'.format(dirName))
+
+    # 각 클래스별 폴더 생성
+    os.chdir('./db/{}'.format(dirName))
+    for i in files['classes']:
+        if not os.path.exists(i):
+            os.makedirs(i)
+
+        for j in range(len(files[i])):
+            file = files[i][j]['src']
+            fileName = '{}/{}'.format(i, str(i) + '_' + str(j) + '.png')
+            image = base64.b64decode(str(file.split(',')[1]))
+            with open(fileName, 'wb') as f:
+                f.write(image)
 
 # args : (classes 배열, scores 배열, 원하는 score의 정도)
 def parseCalorieDB(classes, scores, score):
@@ -61,7 +85,8 @@ def hello():
 def fileUpload():
     if request.method == 'POST':
         try:
-            data = request.get_data()
+            data = request.get_json()
+            makeDirectory(data)
 
             return {'success': True, 'msg': '서버에 학습 이미지 업로드가 완료되었습니다.'}
         except Exception as e:
@@ -107,6 +132,7 @@ def saveImage():
     if request.method == 'POST':
         try:
             file = request.files['file']
+            print(file)
             file.save(secure_filename(file.filename))
 
             return {'success': True, 'msg': '이미지가 정상적으로 저장 되었습니다.'}
