@@ -32,6 +32,12 @@ export default {
 </script>
 
 <style>
+  html,
+  body {
+      height: 100%;
+      margin: 0;
+  }
+
   .basic, .custom {
     height: 35vw;
     font-size: 1.5rem;

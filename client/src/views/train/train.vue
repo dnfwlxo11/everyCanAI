@@ -1,43 +1,70 @@
 <template>
     <div id="train">
-        <div class="btn-group btn-group-toggle mt-3" data-toggle="buttons">
-            <label class="btn btn-outline-primary active">
-                <input type="radio" name="options" id="option1" checked> 로컬
-            </label>
-            <label class="btn btn-outline-primary">
-                <input type="radio" name="options" id="option2"> 웹캠
-            </label>
+        <div class="container pt-3 pb-5 mt-5 mb-5 vh-100">
+            <!-- <div ref="mode" class="btn-group btn-group-toggle mb-3" data-toggle="buttons" @change="getMode">
+                <label class="btn btn-outline-primary active">
+                    <input type="radio" name="options" id="option1" checked> 로컬
+                </label>
+                <label class="btn btn-outline-primary">
+                    <input type="radio" name="options" id="option2"> 웹캠
+                </label>
+            </div> -->
+            <local v-if="mode=='local'"></local>
+            <cam v-else></cam>
+
+            <div class="row">
+                <div class="col-12">
+                    <div class="mb-3">
+                        <div class="card">
+                            <div class="card-header text-left pb-0">
+                                <h5><strong>모델 정보</strong><small> (BaseModel. resnet50)</small></h5>
+                            </div>
+                            <div v-if="modelInfo==null" class="card-body">모델 정보를 불러오는 중입니다.</div>
+                            <div v-else class="card-body">{{modelInfo}}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <local v-if="mode=='local'"></local>
-        <cam v-else></cam>
+        
     </div>
 </template>
 
 <script>
-import Local from './vues/local'
-import Cam from './vues/cam'
+    import axios from 'axios'
+    import Local from './vues/local'
+    import Cam from './vues/cam'
 
-export default {
-    name: 'Train',
+    export default {
+        name: 'Train',
 
-    components: {
-        Local,
-        Cam
-    },
+        components: {
+            Local,
+            Cam
+        },
 
-    data() {
-        return {
-            mode: 'local'
+        data() {
+            return {
+                mode: 'local',
+                modelInfo: null,
+            }
+        },
+
+        mounted() {
+            this.getModel()
+        },
+
+        methods: {
+            async getModel() {
+                let res = await axios.get('/api/information')
+                this.modelInfo = res.data.info
+            },
+
+            getMode() {
+                console.log(this.$refs.mode.focus)
+            }
         }
-    },
-
-    mounted() {
-    },
-
-    methods: {
-        
     }
-}
 </script>
 
 <style>
@@ -46,7 +73,7 @@ export default {
         height: 100%;
         margin: 0;
         overflow: hidden;
-    }    
+    }
 
     .mdi {
         font-size: 24px;
@@ -75,7 +102,7 @@ export default {
     .after {
         overflow: scroll;
     }
-    
+
     ul {
         list-style: none;
         padding-left: 0px;

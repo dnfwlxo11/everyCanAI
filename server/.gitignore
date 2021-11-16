@@ -7,3 +7,4 @@ calorieDB/
 models/
 config.py
 __pycache__
+db/

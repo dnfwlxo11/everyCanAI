@@ -1,28 +1,29 @@
 <template>
     <div id='local'>
-        <div class="modal">
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">학습 사진 업로드</h5>
+                        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
-                        <p>사진 업로드 중입니다.</p>
+                        ...
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-danger" data-dismiss="modal">취소</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary">Save changes</button>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="container pt-3 pb-5 mt-5 mb-5 vh-100" ref="container">
+        <div class="" ref="container">
             <div>
                 <div class="row align-items-center">
                     <div class="col-md-2 text-left">
-                        <button class="btn btn-primary" @click="uploadImage">사진 업로드</button>
+                        <button class="btn btn-primary" @click="uploadImage" :disabled='!isDisabled'>사진 업로드</button>
                     </div>
                     <div class="col-md-8">
                         <div>
@@ -43,50 +44,52 @@
                                 <div class="card-header pb-2">
                                     <div class="row align-items-center">
                                         <div class="col-2 text-left" @click="moveLeftClass">
-                                            <i class="mdi mdi-arrow-left"></i>
+                                            <i class="mdi mdi-arrow-left" style="font-size: 16px;"></i>
                                         </div>
                                         <div class="col-8">
-                                            <input class="text-center p-0" type="text" v-model="classes[currIdx]"
+                                            <input class="text-center p-0 m-0 card-title" type="text" v-model="classes[currIdx]"
                                                 :disabled='isDisabledClass' />
-                                            <i v-if="isDisabledClass" class="mdi mdi-clipboard-edit-outline"
-                                                @click="editClassName()"></i>
-                                            <i v-else class="mdi mdi-check" @click="isDisabledClass=true"
-                                                @blur="isDisabledClass=true"></i>
+                                            <i v-if="isDisabledClass" class="mdi mdi-clipboard-edit-outline ml-3"
+                                                style="font-size: 16px;" @click="editClassName()"></i>
+                                            <i v-else class="mdi mdi-check ml-3" style="font-size: 16px;"
+                                                @click="isDisabledClass=true" @blur="isDisabledClass=true"></i>
                                         </div>
                                         <div class="col-2 text-right">
                                             <i v-if="currIdx==classes.length-1"
-                                                class="mdi mdi-folder-multiple-plus-outline mr-3"
-                                                @click="addClass()"></i>
-                                            <i v-else class="mdi mdi-arrow-right" @click="moveRightClass()"></i>
-                                            <i class="mdi mdi-delete" @click="deleteClass(currIdx)"></i>
+                                                class="mdi mdi-folder-multiple-plus-outline"
+                                                style="font-size: 16px;" @click="addClass()"></i>
+                                            <i v-else class="mdi mdi-arrow-right" @click="moveRightClass()" style="font-size: 16px;"></i>
+                                            <i class="mdi mdi-delete ml-3" style="font-size: 16px;color: grey;"
+                                                @click="deleteClass(currIdx)"></i>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="upload-div" type="fileUpload" @dragenter="onDragenter"
-                                    @dragover="onDragover" @dragleave="onDragleave" @drop="onDrop" @click="onClick">
-                                    <div v-if="!fileList[currIdx].length"
-                                        class="d-flex align-items-center justify-content-center file-upload align-items-center"
-                                        :class="isDragged ? 'dragged' : ''" style="height: 500px">
-                                        <strong>Drag & Drop Files</strong>
+                                <div class="card-body local p-0">
+                                    <div class="upload-div" type="fileUpload" @dragenter="onDragenter"
+                                        @dragover="onDragover" @dragleave="onDragleave" @drop="onDrop" @click="onClick">
+                                        <div v-if="!fileList[currIdx].length"
+                                            class="d-flex align-items-center justify-content-center file-upload align-items-center"
+                                            :class="isDragged ? 'dragged' : ''" style="height: 500px">
+                                            <strong>Drag & Drop Files</strong>
+                                        </div>
                                     </div>
-                                </div>
-                                <input style="display: none;" type="file" ref="fileInput" @change="onFileChange"
-                                    multiple>
-                                <div v-for="(file, index) in fileList[currIdx]" :key="index"
-                                    @change="fileList[currIdx]">
-                                    <div style="float: left; padding: 10px">
-                                        <div style="position: relative;">
-                                            <img class="upload-image" :src="file.src"
-                                                :width='parseInt(cardWidth / 5) - 25'
-                                                :height='parseInt((cardWidth / 5) * 0.56)'>
-                                            <div style="position: absolute;top: 0; right:0"
-                                                @click="handleRemove(index)">
-                                                <a class="d-block" href="javascript:;"><i
-                                                        class="mdi mdi-delete"></i></a>
+                                    <input style="display: none;" type="file" ref="fileInput" @change="onFileChange"
+                                        multiple>
+                                    <div v-for="(file, index) in fileList[currIdx]" :key="index"
+                                        @change="fileList[currIdx]">
+                                        <div style="float: left; padding: 5px">
+                                            <div style="position: relative;">
+                                                <img class="upload-image" :src="file.src"
+                                                    :width='parseInt(cardWidth / 5) - 30'
+                                                    :height='parseInt((cardWidth / 5) * 0.56)'>
+                                                <div style="position: absolute;top: 0; right:0"
+                                                    @click="handleRemove(index)">
+                                                    <a href="javascript:;"><i class="mdi mdi-delete"></i></a>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div style="float: left;">
-                                            {{ file.name }}
+                                            <div>
+                                                {{ file.name }}
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -94,7 +97,7 @@
                         </div>
                         <div class="col-md-2">
                             <div class="card">
-                                <div class="card-header pb-2">
+                                <div class="card-header pb-2 card-title">
                                     클래스 목록
                                 </div>
                                 <div class="card-body local">
@@ -109,22 +112,10 @@
                         </div>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-12">
-                        <div class="mb-3">
-                            <div class="card">
-                                <div class="card-header text-left pb-0">
-                                    <h5><strong>모델 정보</strong><small> (BaseModel. resnet50)</small></h5>
-                                </div>
-                                <div v-if="modelInfo==null" class="card-body">모델 정보를 불러오는 중입니다.</div>
-                                <div v-else class="card-body">{{modelInfo}}</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+
             </div>
         </div>
-        
+
     </div>
 </template>
 
@@ -143,10 +134,10 @@
                 cardWidth: 0,
                 containerHeight: 0,
                 isDragged: false,
-                modelInfo: null,
                 classes: ['Class 1'],
                 currIdx: 0,
                 createNum: 1,
+                imagePath: '',
                 isDisabled: true,
                 isDisabledClass: true,
                 isProgress: false
@@ -160,7 +151,6 @@
         methods: {
             init() {
                 this.getCardWidth()
-                this.getModel()
             },
 
             getCardWidth() {
@@ -213,7 +203,6 @@
                     tmpArr.push(files[i])
                 }
 
-                console.log(tmpArr)
                 this.$set(this.fileList, this.currIdx, this.fileList[this.currIdx].concat(tmpArr))
             },
 
@@ -238,7 +227,6 @@
                     this.moveLeftClass();
                     this.$delete(this.classes, index)
                     this.$delete(this.fileList, index)
-                    console.log(this.$refs.fileInput)
                 }
             },
 
@@ -265,36 +253,48 @@
                     result[this.classes[idx]] = item
                 })
 
-                console.log(result)
-
                 return result
             },
 
-            async getModel() {
-                let res = await axios.get('/api/information')
-                this.modelInfo = res.data.info
+
+
+            uploadImageCheck() {
+                let cnt = 0
+                this.fileList.forEach(item => {
+                    cnt += item.length
+                })
+
+                return cnt ? true : false
             },
 
             async uploadImage() {
+                if (!this.uploadImageCheck()) return false
+
                 var uploadFiles = this.convertFiles()
 
                 this.isProgress = true
                 let res = await axios.post('/api/upload', uploadFiles)
 
-                console.log(res)
-
-                if (res['success']) {
+                if (res['data']['success']) {
+                    this.imagePath = res['data']['path']
                     this.isProgress = false
                 } else {
                     this.isProgress = false
                 }
 
-                console.log('이미지 업로드')
                 this.isDisabled = false
             },
 
             async trainImage() {
-                console.log('학습 시작')
+                let res = await axios.post('/api/train', this.imagePath)
+
+                if (res['data']['success']) {
+                    this.$router.push('/train/modelSummary')
+                } else {
+                    this.isProgress = true
+                    this.isDisabled = true
+                    return false
+                }
             }
         }
     }
@@ -308,11 +308,11 @@
     }
 
     .mdi {
-        font-size: 20px;
+        font-size: 16px;
     }
 
     .mdi-home-outline {
-        font-size: 36px;
+        font-size: 24px;
     }
 
     .dragged {
@@ -331,12 +331,13 @@
         min-height: 500px;
     }
 
-    .after {
-        overflow: scroll;
-    }
-
     ul {
         list-style: none;
         padding-left: 0px;
+    }
+
+    .card-title {
+        padding-top: 15px;
+        padding-bottom: 15px;
     }
 </style>
