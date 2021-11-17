@@ -1,7 +1,7 @@
 FROM ubuntu:20.04
 
-ENV GIT_USER=dnfwlxo11
-ENV GIT_ACCESS_KEY=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
+ENV GIT_USER={{허가받은사용자}}
+ENV GIT_ACCESS_KEY={{사용자access키}}
 
 RUN apt-get update
 RUN apt-get install -y python3 python3-pip python3-dev build-essential
