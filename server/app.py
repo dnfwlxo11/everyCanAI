@@ -53,7 +53,7 @@ def makeDirectory(files):
 def hello():
     if request.method == 'GET':
         try:
-            return {'success': True, 'msg': '정상적으로 서버 동작 중'}
+            return {'success': True, 'msg': '정상적으로 서버 동작 중입니다.'}
         except Exception as e:
             return {'success': False, 'msg': 'GET 요청 테스트 중 에러가 발생했습니다.', 'error': e}
 
