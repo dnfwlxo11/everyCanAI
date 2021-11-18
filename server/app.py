@@ -59,10 +59,6 @@ def hello():
 
 @app.route('/api/models', methods=['GET'])
 def loadModels():
-    print(os.getcwd())
-    os.chdir('server')
-    print(os.getcwd())
-
     if request.method == 'GET':
         try:
             result = []
