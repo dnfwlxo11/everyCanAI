@@ -11,6 +11,8 @@ from flask_cors import CORS
 import retrain_inceptionV3 as retrain
 from asyncFlask.job import test, train
 
+os.chdir('/app/server')
+
 app = Flask(__name__)
 cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 
@@ -62,6 +64,7 @@ def loadModels():
     if request.method == 'GET':
         try:
             result = []
+
             path = './models'
 
             modelList = os.listdir(path)
