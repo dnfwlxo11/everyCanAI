@@ -11,7 +11,7 @@ module.exports = {
             '/api': {
                 // 프록시 요청을 보낼 서버의 주소
                 // target: 'http://192.168.0.93:16007'
-                target: 'http://namuintell.iptime.org:16005'
+                target: 'http://localhost:16005'
             },
             
         }
