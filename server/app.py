@@ -11,7 +11,6 @@ from flask_cors import CORS
 import retrain_inceptionV3 as retrain
 from asyncFlask.job import test, train
 
-
 app = Flask(__name__)
 cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 
@@ -60,6 +59,10 @@ def hello():
 
 @app.route('/api/models', methods=['GET'])
 def loadModels():
+    print(os.getcwd())
+    os.chdir('server')
+    print(os.getcwd())
+
     if request.method == 'GET':
         try:
             result = []

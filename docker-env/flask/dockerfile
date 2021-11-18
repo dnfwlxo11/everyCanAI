@@ -22,5 +22,4 @@ RUN pip3 install -r server/requirements.txt
 RUN chmod +x ./entrypoint.sh
 RUN chmod +x ./celery.sh
 
-CMD ["python3", "server/app.py"]
-# ENTRYPOINT ["./entrypoint.sh"]
+ENTRYPOINT ["./entrypoint.sh"]
