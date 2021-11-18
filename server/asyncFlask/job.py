@@ -1,10 +1,14 @@
+# -*- coding: utf-8 -*-
+
 from celery import Celery
+import redis
 import retrain_inceptionV3 as retrain
 
 BROKER_URL = 'redis://localhost:16006/0'
 CELERY_RESULT_BACKEND = 'redis://localhost:16006/0'
 
 app = Celery('job', broker=BROKER_URL, backend=CELERY_RESULT_BACKEND)
+rd = redis.StrictRedis(host='localhost', port=16006, db=0)
 
 @app.task(name="test")
 def test(x, y):
@@ -20,6 +24,8 @@ def test(x, y):
 def train(imagePath):
     try:
         result = retrain.startTrain(imagePath)
+
+        print(train.request.id)
 
         return {'success': True}
     except Exception as e:

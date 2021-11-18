@@ -8,3 +8,15 @@ services:
       dockerfile: Dockerfile
     ports:
       - "16005:5000"
+    environment:
+      - BRANCH_NAME=master
+  redis:
+    image: redis
+    container_name: daein_redis
+    build:
+      context: redis
+      dockerfile: Dockerfile
+    ports:
+      - "16006:6379"
+    volumes:
+      - ./redis/app:/data

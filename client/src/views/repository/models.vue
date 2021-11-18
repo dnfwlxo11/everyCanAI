@@ -20,11 +20,11 @@
                         <td>
                             {{item['progress']}}
                         </td>
-                        <td v-if="item['progress']=='학습 완료'" class="p-2">
+                        <td v-if="item['progress']=='학습 완료'">
                             <button class="btn btn-primary mr-3" @click="downloadModel(item['name'])">다운로드</button>
                             <button class="btn btn-danger" @click="deleteModel(item['name'])">삭제</button>
                         </td>
-                        <td v-else class="p-2">
+                        <td v-else>
                             <div>
                                 학습 중
                             </div>
@@ -78,5 +78,9 @@ export default {
 
     ul {
         list-style: none;
+    }
+
+    td {
+        height: 50px;
     }
 </style>

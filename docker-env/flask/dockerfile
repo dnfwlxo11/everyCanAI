@@ -1,21 +1,25 @@
 FROM ubuntu:20.04
 
-ENV GIT_USER={{허가받은사용자}}
-ENV GIT_ACCESS_KEY={{사용자access키}}
+# ENV GIT_USER={{허가받은사용자}}
+# ENV GIT_ACCESS_KEY={{사용자access키}}
 
 RUN apt-get update
 RUN apt-get install -y python3 python3-pip python3-dev build-essential
 
 RUN apt-get install git -y
 
+RUN mkdir -p /app
 WORKDIR /app
 
-RUN git clone https://${GIT_USER}:${GIT_ACCESS_KEY}@github.com/dnfwlxo11/flask_classification_sampleServer.git .
+RUN git clone https://github.com/dnfwlxo11/flask_classification_sampleServer.git /app
 
 COPY ./app /app
 
 EXPOSE 5000
 
 RUN pip3 install -r server/requirements.txt
+
+RUN chmod +x ./entrypoint.sh
+RUN chmod +x ./celery.sh
 
 ENTRYPOINT ["./entrypoint.sh"]
