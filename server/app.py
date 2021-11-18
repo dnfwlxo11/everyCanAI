@@ -64,11 +64,7 @@ def loadModels():
             result = []
             path = './models'
 
-            print(os.getcwd())
-
             modelList = os.listdir(path)
-            print(modelList)
-
 
             if 'imagenet' in modelList:
                 modelList.remove('imagenet')
