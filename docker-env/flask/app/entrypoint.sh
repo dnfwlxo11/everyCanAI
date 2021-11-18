@@ -1,4 +1,5 @@
 #!/bin/bash
+
 echo ${BRANCH_NAME}
 
 git checkout ${BRANCH_NAME}

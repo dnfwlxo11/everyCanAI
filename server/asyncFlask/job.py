@@ -4,8 +4,8 @@ from celery import Celery
 import redis
 import retrain_inceptionV3 as retrain
 
-BROKER_URL = 'redis://localhost:16006/0'
-CELERY_RESULT_BACKEND = 'redis://localhost:16006/0'
+BROKER_URL = 'redis://daein_redis/0'
+CELERY_RESULT_BACKEND = 'redis://daein_redis/0'
 
 app = Celery('job', broker=BROKER_URL, backend=CELERY_RESULT_BACKEND)
 rd = redis.StrictRedis(host='localhost', port=16006, db=0)

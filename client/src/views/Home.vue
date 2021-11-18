@@ -2,7 +2,7 @@
   <div class="home">
     <div class="container pt-5 pb-5 mt-5 mb-5 h-100">
       <div class="row h-100">
-        <div class="col-md-4">
+        <div class="col-md-4 mb-3">
           <div class="card d-flex align-items-center justify-content-center basic" @click="$router.push({path: 'inference'})">
             <div class="text-left">
               <strong>기본 모델로 이미지를 분류하고 싶어요.</strong><br>
@@ -10,7 +10,7 @@
             </div>
           </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-4 mb-3">
           <div class="card d-flex align-items-center justify-content-center  custom" @click="$router.push({path: 'train'})">
             <div class="text-left">
               <strong>내가 원하는 모델을 만들고 싶어요.</strong><br>
