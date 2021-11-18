@@ -64,10 +64,16 @@ def loadModels():
             result = []
             path = './models'
 
+            print(os.getcwd())
+
             modelList = os.listdir(path)
+            print(modelList)
+
 
             if 'imagenet' in modelList:
                 modelList.remove('imagenet')
+            if 'readme.md' in modelList:
+                modelList.remove('readme.md')
 
             for i in modelList:
                 modelFiles = os.listdir('{}/{}'.format(path, i))
