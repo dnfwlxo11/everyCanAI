@@ -2,7 +2,7 @@
     <div id="inference">
         <div class="container pt-5 pb-5 mt-5 mb-5">
             <div class="row mb-3">
-                <div class="col mb-3"><i class="mdi mdi-home-outline" @click="$router.push({path: '/'})"></i></div>
+                <div class="col mb-3"><div><i class="mdi mdi-home-outline" @click="$router.push({path: '/'})"></i></div>홈</div>
                 <!-- <button class="btn btn-primary" @click="printImage">출력</button> -->
             </div>
             <div class="row align-items-center">

@@ -3,7 +3,7 @@ import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import Inference from '../views/inference/inference.vue'
 import Train from '../views/train/train.vue'
-import ModelSummary from '../views/train/vues/modelSummary.vue'
+import Models from '../views/repository/models.vue'
 
 Vue.use(VueRouter)
 
@@ -19,15 +19,15 @@ const routes = [
     component: Train
   },
   {
+    path: '/models',
+    name: 'Models',
+    component: Models
+  },
+  {
     path: '/inference',
     name: 'Inference',
     component: Inference
-  },
-  {
-    path: '/train/modelSummary',
-    name: 'ModelSummary',
-    component: ModelSummary
-  },
+  }
 ]
 
 const router = new VueRouter({

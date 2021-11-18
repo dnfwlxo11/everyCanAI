@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="ko">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css"
+        integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous">
+
+    <title>calorie Figther</title>
+</head>
+
+<body onload="init()">
+    <div class="container pt-5 pb-5 mt-5 mb-5">
+        <div class="row">
+            <div class="col-12 text-center">
+                <div class="mb-5">
+                    <h1>Calorie Fighter!!</h1>
+                </div>
+                <div class="camera mb-3">
+                    <video id="videoPlayer" width="720" height="480"></video>
+                </div>
+                <div class="mb-3" id="camCap">
+                    <canvas id="canvas_vid" style="display: none;"></canvas>
+                </div>
+                <div class="mb-3">
+                    <button class="btn btn-primary" onclick="captureCam()" data-toggle="modal"
+                        data-target="#resultModal" style="width: 720px;">분석 하기</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="resultModal" tabindex="-1" aria-labelledby="resultModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-center" id="exampleModalLabel">분석 결과</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body mt-5 row align-items-center text-center" style="min-height: 480px;">
+                    <div id="load" class="col">
+                        <button class="btn btn-primary" type="button" disabled>
+                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                            분석중...
+                        </button>
+                    </div>
+                    <div class="col" id="contents" style="display: none;">
+                        <div class="row text-center">
+                            <div class="col-7 text-center">
+                                <img id="capImg" src="" alt="" width="480" height="360"
+                                    style="border: solid black 1px;">
+                            </div>
+                            <div class="col-5 text-left" style="margin: 0px auto;">
+                                <div class="mb-3">
+                                    <strong>분석 결과</strong>
+                                </div>
+                                <div id="result"></div>
+                                <div id="ment"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="saveMail()">저장
+                        (메일)</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">확인</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
+    integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-fQybjgWLrvvRgtW6bFlB7jaZrFsaBXjsOMm/tB9LTS58ONXgqbR9W8oWht/amnpF"
+    crossorigin="anonymous"></script>
+<script>
+    let videoPlayer, canvas_vid = null
+    let video = null
+    let isStreaming = false
+    let height = 0
+    let width = 480
+    let result = null
+    let foodName = null
+    let kcal = null
+    let conf = null
+    let comment = null
+
+    function init() {
+        videoPlayer = document.getElementById('videoPlayer')
+        canvas_vid = document.getElementById('canvas_vid')
+        runPlayer()
+    }
+
+    function runPlayer() {
+        navigator.mediaDevices.getUserMedia({ video: true, audio: false })
+            .then((stream) => {
+                videoPlayer.srcObject = stream
+                videoPlayer.play()
+            })
+            .catch((err) => {
+                console.error(err)
+                alert('stream not supported!')
+            })
+    }
+
+    function captureCam() {
+        const imgDiv = document.getElementById('camCap')
+        const capImg = document.getElementById('capImg')
+        canvas_vid = document.getElementById('canvas_vid')
+        const context = canvas_vid.getContext('2d')
+
+        const modal = document.getElementById('resultModal')
+
+        canvas_vid.width = videoPlayer.width
+        canvas_vid.height = videoPlayer.height
+        context.drawImage(videoPlayer, 0, 0, canvas_vid.width, canvas_vid.height)
+
+        const imgUrl = canvas_vid.toDataURL('image/png')
+        const img = document.createElement('img')
+
+        const link = document.createElement('a')
+        link.href = imgUrl
+        link.innerHTML = `<img src="${imgUrl}" />`
+        link.setAttribute('download', 'capture')
+        initModal()
+        inference(imgUrl)
+
+        // 다운로드 필요할 시 주석 해제
+        // link.click()
+
+        capImg.setAttribute('src', imgUrl)
+    }
+
+    async function inference(base64Image) {
+        let resultDiv = document.getElementById('result')
+        let loadDiv = document.getElementById('load')
+        let contentDiv = document.getElementById('contents')
+        let mentDiv = document.getElementById('ment')
+
+        while (resultDiv.hasChildNodes()) { resultDiv.removeChild(resultDiv.firstChild); }
+        while (mentDiv.hasChildNodes()) { mentDiv.removeChild(mentDiv.firstChild); }
+
+        let res = await fetch('/inference', {
+            method: "POST",
+            body: base64Image
+        })
+
+        result = await res.json()
+
+        loadDiv.style.display = 'none'
+        contentDiv.style.display = 'inline'
+
+        let cnt = 0;
+        result.predict.forEach(item => {
+            if (item.score >= 30.0) {
+                let resultLi = document.createElement('label')
+                resultLi.innerText = `음식명 : ${item.food}\n칼로리 : ${item.cal}\n정확도 : ${item.score.toFixed(2)}%`
+                foodName = item.food
+                kcal = item.cal
+                conf = item.score.toFixed(2)
+                comment = '염분이 많은 음식이에요\n 조금만 드세요'
+                resultDiv.appendChild(resultLi)
+                cnt += 1
+                return
+            }
+        })
+
+        if (cnt) {
+            let ment = document.createElement('h4')
+            ment.innerText = '염분이 많은 음식이에요\n 조금만 드세요'
+
+            mentDiv.appendChild(ment)
+        } else {
+            let ment = document.createElement('h4')
+            ment.innerText = '이미지에서 음식을 찾지 못했습니다.\n다시 시도해주세요.'
+
+            mentDiv.appendChild(ment)
+        }
+    }
+
+    function initModal() {
+        let loadDiv = document.getElementById('load')
+        let contentDiv = document.getElementById('contents')
+
+        loadDiv.style.display = 'inline'
+        contentDiv.style.display = 'none'
+    }
+
+    async function saveMail() {
+        mailBody = JSON.stringify({
+            'sender': 'sonogonglee@gmail.com',
+            'reciver': 'sonogonglee@gmail.com',
+            'content': {
+                'msg': `${comment}`,
+                'kcal': `${kcal}`,
+                'food': `${foodName}`,
+                'conf': `${conf}`
+            }
+        })
+
+        let res = await fetch('/mail', {
+            method: "POST",
+            body: mailBody
+        })
+
+        result = await res.json()
+    }
+</script>
+
+</html>

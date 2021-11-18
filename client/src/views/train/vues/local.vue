@@ -21,9 +21,10 @@
         </div>
         <div class="" ref="container">
             <div>
-                <div class="row align-items-center">
+                <div class="row align-items-center mb-2">
                     <div class="col-md-2 text-left">
-                        <button class="btn btn-primary" @click="uploadImage" :disabled='!isDisabled'>사진 업로드</button>
+                        <button class="btn btn-primary mb-2" @click="uploadImage" :disabled='!isDisabled'>사진 업로드</button>
+                        <button class="btn btn-primary" @click="wooUploadImage" :disabled='!isDisabled'>사진 업로드 (우강)</button>
                     </div>
                     <div class="col-md-8">
                         <div>
@@ -34,7 +35,8 @@
                         </div>
                     </div>
                     <div class="col-md-2 text-right">
-                        <button class="btn btn-danger" @click="trainImage" :disabled='isDisabled'>학습 시작</button>
+                        <button class="btn btn-danger mb-2" @click="trainImage" :disabled='isDisabled'>학습 시작</button>
+                        <button class="btn btn-danger" @click="wooTrainImage" :disabled='isDisabled'>학습 시작 (우강)</button>
                     </div>
                 </div>
                 <div class="mb-3">
@@ -287,6 +289,36 @@
 
             async trainImage() {
                 let res = await axios.post('/api/train', this.imagePath)
+
+                if (res['data']['success']) {
+                    this.$router.push('/models')
+                } else {
+                    this.isProgress = true
+                    this.isDisabled = true
+                    return false
+                }
+            },
+
+            async wooUploadImage() {
+                if (!this.uploadImageCheck()) return false
+
+                var uploadFiles = this.convertFiles()
+
+                this.isProgress = true
+                let res = await axios.post('/woo/upload', uploadFiles)
+
+                if (res['data']['success']) {
+                    this.imagePath = res['data']['path']
+                    this.isProgress = false
+                } else {
+                    this.isProgress = false
+                }
+
+                this.isDisabled = false
+            },
+
+            async wooTrainImage() {
+                let res = await axios.post('/woo/train', this.imagePath)
 
                 if (res['data']['success']) {
                     this.$router.push('/train/modelSummary')

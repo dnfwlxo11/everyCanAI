@@ -5,11 +5,12 @@ from flask import Flask, request, render_template
 from werkzeug.utils import secure_filename
 import inference
 import base64
-from flask_mail import Mail, Message
-from flask_cors import CORS
 import os
 import time
+from flask_cors import CORS
 import retrain_inceptionV3 as retrain
+from asyncFlask.job import test, train
+
 
 app = Flask(__name__)
 cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
@@ -57,11 +58,34 @@ def hello():
         except Exception as e:
             return {'success': False, 'msg': 'GET 요청 테스트 중 에러가 발생했습니다.', 'error': e}
 
+@app.route('/api/models', methods=['GET'])
+def loadModels():
+    if request.method == 'GET':
+        try:
+            result = []
+            path = './models'
+
+            modelList = os.listdir(path)
+            modelList.remove('imagenet')
+
+            for i in modelList:
+                modelFiles = os.listdir('{}/{}'.format(path, i))
+                if 'output_graph.pb' in modelFiles:
+                    result.append({'name': i, 'progress': '학습 완료'})
+                else:
+                    result.append({'name': i, 'progress': '학습 중'})
+
+            return {'success': True, 'msg': '모델 목록을 불러오는데 성공했습니다.', 'models': result}
+        except Exception as e:
+            return {'success': False, 'msg': '모델 목록을 불러오는 중 에러가 발생했습니다.', 'error': e}
+
+
 @app.route('/api/upload', methods=['POST'])
 def fileUpload():
     if request.method == 'POST':
         try:
             data = request.get_json()
+
             path = makeDirectory(data)
 
             return {'success': True, 'msg': '서버에 학습 이미지 업로드가 완료되었습니다.', 'path': path}
@@ -82,15 +106,18 @@ def modelTrain():
         try:
             imagePath = request.get_json()['path']
 
-            print(imagePath)
-            result = retrain.startTrain(imagePath)
-
+            result = train.delay(imagePath)
             print(result)
 
-            return result
+            return {'success': True, 'msg': '학습 요청을 완료했습니다.', 'job_id': str(result)}
         except Exception as e:
-            print(e)
             return {'success': False, 'error': e}
+
+@app.route('/api/redis', methods=['POST'])
+def redisTest():
+    if request.method == 'POST':
+        result = test.delay(1,4)
+        return {'success': True}
 
 @app.route('/api/inference', methods=['POST'])
 def getImage():
