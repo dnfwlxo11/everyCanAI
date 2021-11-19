@@ -11,33 +11,30 @@ git pull origin ${BRANCH_NAME}
 
 echo "git ${BRANCH_NAME} pull completed"
 
-# echo "celery daemon setting start"
+cat << EOF > /etc/init.d/celeryd
+celery -A $CELERY_BIN multi start $CELERYD_NODES \
+    --pidfile="$HOME/run/celery/%n.pid" \
+    --logfile="$HOME/log/celery/%n%I.log" \
+    --loglevel=info
+EOF
 
-# nano /etc/init.d/celeryd
-# nano /etc/default/celeryd
+cat << EOF > /etc/default/celeryd
+CELERYD_NODES="worker1"
+CELERY_BIN="/app/server/asyncFlask/job"
+CELERY_APP="job"
+CELERYD_CHDIR="/app/server/asyncFlask"
+CELERYD_OPTS="--time-limit=300 --concurrency=2"
+CELERYD_LOG_LEVEL="INFO".
+CELERYD_LOG_FILE="/var/log/celery/%n%I.log"
+CELERYD_PID_FILE="/var/run/celery/%n.pid"
+CELERYD_USER="root"
+CELERYD_GROUP="root"
+EOF
 
-# CELERYD_NODES="flaskWorker"
-# CELERY_BIN="/app/server/asyncFlask"
-# CELERY_APP="classificationServer"
-# CELERYD_CHDIR="/app/server"
-# CELERYD_OPTS="--time-limit=300 --concurrency=2"
-# CELERYD_LOG_FILE="/var/log/celery/%n%I.log"
-# CELERYD_PID_FILE="/var/run/celery/%n.pid"
-# CELERYD_USER="root"
-# CELERYD_GROUP="root"
-# CELERY_CREATE_DIRS=1
+chmod 755 /etc/init.d/celeryd
+chown root:root /etc/init.d/celeryd
 
-# sudo chmod 755 /etc/init.d/celeryd
-# sudo chown root:root /etc/init.d/celeryd
-
-# /etc/init.d/celeryd start
-
-# echo "celery daemon start"
-
-echo $pwd
-echo "server start"
-
-python3 server/app.py
+# python3 server/app.py
 
 # cd /app/server/asyncFlask
 

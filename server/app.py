@@ -1,14 +1,11 @@
 # -*- coding: utf-8 -*-
 
-import json
-from flask import Flask, request, render_template
-from werkzeug.utils import secure_filename
+from flask import Flask, request
 import inference
 import base64
 import os
 import time
 from flask_cors import CORS
-import retrain_inceptionV3 as retrain
 from asyncFlask.job import test, train
 
 os.chdir('/app/server')

@@ -3,9 +3,13 @@ FROM ubuntu:20.04
 # ENV GIT_USER={{허가받은사용자}}
 # ENV GIT_ACCESS_KEY={{사용자access키}}
 
+# 패키지 설치 중 상호작용 방지
+ARG DEBIAN_FRONTEND=noninteractive
+
 RUN apt-get update
 RUN apt-get install -y python3 python3-pip python3-dev build-essential
 
+RUN apt-get install -y systemd
 RUN apt-get install git -y
 
 RUN mkdir -p /app
@@ -22,7 +26,5 @@ RUN pip3 install -r server/requirements.txt
 RUN chmod +x ./entrypoint.sh
 RUN chmod +x ./celery.sh
 
-# CMD ["python3", "server/app.py"]
-
-ENTRYPOINT ["./entrypoint.sh"]
-CMD ["./celery.sh"]
+# ENTRYPOINT ["./entrypoint.sh"]
+CMD ["python3", "server/app.py"]
