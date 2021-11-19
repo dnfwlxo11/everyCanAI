@@ -25,3 +25,4 @@ RUN chmod +x ./celery.sh
 # CMD ["python3", "server/app.py"]
 
 ENTRYPOINT ["./entrypoint.sh"]
+CMD ["./celery.sh"]
