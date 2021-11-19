@@ -8,3 +8,4 @@ models/
 config.py
 __pycache__
 db/
+output/

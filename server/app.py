@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 
-from flask import Flask, request
+from flask import Flask, request, Response
 import inference
 import base64
 import os
 import time
 from flask_cors import CORS
 from asyncFlask.job import test, train
+import shutil
 
 os.chdir('/app/server')
 
@@ -121,6 +122,27 @@ def redisTest():
     if request.method == 'POST':
         result = test.delay(1,4)
         return {'success': True}
+
+@app.route('/api/download', methods=['POST'])
+def downloadModel():
+    if request.method == 'POST':
+        try:
+            projectName = request.get_json()['fileName']
+            modelPath = './models/{}'.format(projectName)
+            downloadPath = './output/{}'.format(projectName)
+
+            if not projectName in os.listdir('./output'):
+                shutil.make_archive(os.path.join(downloadPath, 'output'), 'zip', modelPath)
+
+            with open(os.path.join(downloadPath, 'output.zip'), 'rb') as f:
+                data = f.readlines()
+
+            return Response(data, headers={
+                'Content-Type': 'application/zip',
+                'Content-Disposition': 'attachment; filename=output.zip};'
+            })
+        except Exception as e:
+            return {'success': False, 'error': e}
 
 @app.route('/api/inference', methods=['POST'])
 def getImage():
