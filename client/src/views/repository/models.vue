@@ -75,7 +75,8 @@ export default {
         },
 
         async deleteModel(fileName) {
-            console.log(fileName + ' 삭제')
+            let res = await axios.post(`/api/delete/${fileName}`)
+            console.log(res)
         }
     }
 }
