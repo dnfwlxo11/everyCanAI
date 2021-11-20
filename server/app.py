@@ -127,6 +127,7 @@ def redisTest():
 def downloadModel():
     if request.method == 'POST':
         try:
+            print(request.get_json()['fileName'])
             projectName = request.get_json()['fileName']
             modelPath = './models/{}'.format(projectName)
             downloadPath = './output/{}'.format(projectName)
@@ -139,7 +140,8 @@ def downloadModel():
 
             return Response(data, headers={
                 'Content-Type': 'application/zip',
-                'Content-Disposition': 'attachment; filename=output.zip};'
+                'Content-Disposition': 'attachment',
+                'filename': 'output.zip'
             })
         except Exception as e:
             return {'success': False, 'error': e}
