@@ -61,14 +61,17 @@ export default {
         },
 
         async downloadModel(fileName) {
-            let res = await axios.post('/api/download', {'fileName': fileName})
+            let res = await axios.post(`/api/download/${fileName}`, {}, {
+                responseType: 'arraybuffer'
+            })
 
-            const url = window.URL.createObjectURL(new Blob([res.data]))
+            const url = URL.createObjectURL(new Blob([res.data], {type: 'application/zip'}))
             const link = document.createElement('a')
             link.href = url
-            console.log(url)
             link.setAttribute('download', 'output.zip')
             link.click()
+            link.remove()
+            window.URL.revokeObjectURL(url)
         },
 
         async deleteModel(fileName) {

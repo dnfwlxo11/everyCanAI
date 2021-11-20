@@ -35,7 +35,7 @@ chmod 755 /etc/init.d/celeryd
 chown root:root /etc/init.d/celeryd
 
 cd /app/server/asyncFlask
-celery multi start -A job worker --loglevel=info
+celery multi start -A job worker --loglevel=info --logfile="./%n%I.log" --pidfile="./%n.pid"
 
 cd /app
 python3 /app/server/app.py

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from flask import Flask, request, Response
+from flask import Flask, request, send_file
 import inference
 import base64
 import os
@@ -123,26 +123,27 @@ def redisTest():
         result = test.delay(1,4)
         return {'success': True}
 
-@app.route('/api/download', methods=['POST'])
-def downloadModel():
+@app.route('/api/download/<filename>', methods=['POST'])
+def downloadModel(filename):
     if request.method == 'POST':
         try:
-            print(request.get_json()['fileName'])
-            projectName = request.get_json()['fileName']
+            print(request.args, 'args')
+            projectName = filename
             modelPath = './models/{}'.format(projectName)
             downloadPath = './output/{}'.format(projectName)
 
             if not projectName in os.listdir('./output'):
                 shutil.make_archive(os.path.join(downloadPath, 'output'), 'zip', modelPath)
 
-            with open(os.path.join(downloadPath, 'output.zip'), 'rb') as f:
-                data = f.readlines()
+            return send_file(os.path.join(downloadPath, 'output.zip'), mimetype='application/zip', as_attachment=True, attachment_filename='output.zip')
+        except Exception as e:
+            return {'success': False, 'error': e}
 
-            return Response(data, headers={
-                'Content-Type': 'application/zip',
-                'Content-Disposition': 'attachment',
-                'filename': 'output.zip'
-            })
+@app.route('/api/delete/<filename>', methods=['POST'])
+def deleteModel(filename):
+    if request.method == 'POST':
+        try:
+            return {'success': True, 'msg': '{} 프로젝트의 모델을 삭제했습니다.'.format(filename)}
         except Exception as e:
             return {'success': False, 'error': e}
 
