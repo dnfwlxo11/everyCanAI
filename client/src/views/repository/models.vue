@@ -26,7 +26,7 @@
                         </td>
                         <td v-else>
                             <div>
-                                학습 중
+                                {{item['progress']}}
                             </div>
                         </td>
                     </tr>

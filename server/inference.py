@@ -67,18 +67,29 @@ class NodeLookup(object):
       return ''
     return self.node_lookup[node_id]
 
-def create_graph(modelFullPath=baseModel):
+def create_graph(model=baseModel):
     """저장된(saved) GraphDef 파일로부터 graph를 생성하고 saver를 반환한다."""
     # 저장된(saved) graph_def.pb로부터 graph를 생성한다.
-    with tf.gfile.FastGFile(modelFullPath, 'rb') as f:
+    with tf.gfile.FastGFile(model, 'rb') as f:
         graph_def = tf.GraphDef()
         graph_def.ParseFromString(f.read())
         _ = tf.import_graph_def(graph_def, name='')
 
-def run_inference_on_image(imageBinary, labelsFullPath=baseLabel):
+def run_inference_on_image(imageBinary, model=baseLabel):
     image_data = imageBinary
+    print(model, 'inference')
+    
+    labelsFullPath = ''
+    modelsFullPath = ''
 
-    create_graph()
+    if model == 'base':
+      labelsFullPath = baseLabel
+      modelsFullPath = baseModel
+    else:
+      labelsFullPath = './models/{}/output_labels.txt'.format(model)
+      modelsFullPath = './models/{}/output_graph.pb'.format(model)
+
+    create_graph(modelsFullPath)
 
     with tf.Session() as sess:
         print(sess.graph)

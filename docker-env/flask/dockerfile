@@ -9,7 +9,6 @@ ARG DEBIAN_FRONTEND=noninteractive
 RUN apt-get update
 RUN apt-get install -y python3 python3-pip python3-dev build-essential
 
-RUN apt-get install -y systemd
 RUN apt-get install git -y
 
 RUN mkdir -p /app

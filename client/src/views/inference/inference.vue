@@ -55,11 +55,10 @@
             </div>
             <div class="row">
                 <div class="input-group mb-3">
-                    <select class="custom-select" id="inputGroupSelect01">
+                    <select class="custom-select" id="inputGroupSelect01" v-model="selectModel">
                         <option>--- 베이스 모델을 골라주세요. ---</option>
-                        <option value="1" selected>InceptionV3</option>
-                        <option value="2">VGG19 (동작 x)</option>
-                        <option value="3">Resnet-50 (동작 x)</option>
+                        <option value="base" selected>InceptionV3</option>
+                        <option v-for="(item, idx) in models" :key="idx" :value="idx">{{item['name']}}</option>
                     </select>
                 </div>
             </div>
@@ -78,11 +77,21 @@
                 file: null,
                 thumbnail: null,
                 isComplate: false,
-                predict: null
+                predict: null,
+                models: [],
+                selectModel: 'base'
             }
         },
 
+        mounted() {
+            this.init()
+        },
+
         methods: {
+            init() {
+                this.loadModels()
+            },
+
             onClick() {
                 this.$refs.fileInput.click()
             },
@@ -124,13 +133,12 @@
             async inference() {
                 let bodyForm = new FormData()
                 bodyForm.append('file', this.file)
+                bodyForm.append('model', this.selectModel == 'base' ? 'base' : this.models[this.selectModel]['name'])
+                console.log(this.selectModel)
 
                 let res = await axios.post('/api/inference', bodyForm, {
                     header: {
                         'Content-Type': 'multipart/form-data'
-                    },
-                    body: {
-                        'model': 'base'
                     }
                 })
 
@@ -144,6 +152,11 @@
                         this.predict = `객체명: ${tmp[0][0]}\n정확도: ${tmp[0][1]}%`
                     }
                 }
+            },
+
+            async loadModels() {
+                let res = await axios.get('/api/models')
+                this.models = res['data']['models']
             }
         }
     }

@@ -13,19 +13,24 @@ app = Celery('job', broker=BROKER_URL, backend=CELERY_RESULT_BACKEND)
 rd = redis.StrictRedis(host='localhost', port=16006, db=0)
 
 def zipOutput(directoryName):
-    modelPath = '../models/{}'.format(directoryName)
-    downloadPath = '../output/{}'.format(directoryName)
+    try:
+        modelPath = '../models/{}'.format(directoryName)
+        downloadPath = '../output/{}'.format(directoryName)
 
-    print(modelPath, downloadPath, 'test')
+        print(modelPath, downloadPath, 'test')
 
-    if not directoryName in os.listdir('../output'):
-        progressFilePath = os.path.join(downloadPath, 'zipping.txt')
-        os.mkdir(downloadPath)
-        f = open(progressFilePath, 'w')
+        if not directoryName in os.listdir('../output'):
+            progressFilePath = os.path.join(downloadPath, 'zipping.txt')
+            os.mkdir(downloadPath)
+            f = open(progressFilePath, 'w')
+            f.close()
+            shutil.make_archive(os.path.join(downloadPath, 'output'), 'zip', modelPath)
+
+        os.remove(progressFilePath)
+    except Exception as e:
+        print(e)
+        f = open(os.path.join(downloadPath, 'error.txt'), 'w')
         f.close()
-        shutil.make_archive(os.path.join(downloadPath, 'output'), 'zip', modelPath)
-
-    os.remove(progressFilePath)
 
 @app.task(name="test")
 def test(x, y):

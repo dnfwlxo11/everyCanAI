@@ -75,6 +75,7 @@ def loadModels():
                 modelList.remove('readme.md')
 
             for i in modelList:
+                print(outputList)
                 if i in outputList:
                     isZip = os.listdir(os.path.join(outputPath, i))
                     modelFiles = os.listdir(os.path.join(modelPath, i))
@@ -172,7 +173,11 @@ def getImage():
             # blob 버전
             data = request.files['file'].read()
 
-            predict = inference.run_inference_on_image(data)
+            model = request.form.get('model')
+            print(model)
+
+            predict = inference.run_inference_on_image(data, model)
+            
             result = parsePredict(predict['classes'], predict['scores'], 0.3)
 
             return {'success': True, 'msg': '이미지를 정상적으로 분류하였습니다.', 'predict': result}
