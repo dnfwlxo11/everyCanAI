@@ -12,6 +12,8 @@ services:
       - BRANCH_NAME=master
     volumes:
       - ./flask/models:/app/server/models
+      - ./flask/output:/app/server/output
+      - ./flask/db:/app/server/db
   redis:
     image: redis
     container_name: daein_redis

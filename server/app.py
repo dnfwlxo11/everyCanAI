@@ -66,6 +66,7 @@ def loadModels():
             path = './models'
 
             modelList = os.listdir(path)
+            outputList = os.listdir('./output')
 
             if 'imagenet' in modelList:
                 modelList.remove('imagenet')
@@ -77,6 +78,8 @@ def loadModels():
                 if 'output_graph.pb' in modelFiles:
                     result.append({'name': i, 'progress': '학습 완료'})
                 else:
+                    if 'otuput.zip' in outputList:
+                        result.append({'name': i, 'progress': '결과 압축 중'})
                     result.append({'name': i, 'progress': '학습 중'})
 
             return {'success': True, 'msg': '모델 목록을 불러오는데 성공했습니다.', 'models': result}
