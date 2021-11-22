@@ -2,3 +2,4 @@ app/
 models/
 output/
 db/
+dockerfile

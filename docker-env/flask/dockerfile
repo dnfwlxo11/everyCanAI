@@ -1,7 +1,7 @@
 FROM ubuntu:20.04
 
-# ENV GIT_USER={{허가받은사용자}}
-# ENV GIT_ACCESS_KEY={{사용자access키}}
+ENV GIT_USER=dnfwlxo11
+ENV GIT_ACCESS_KEY=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
 
 # 패키지 설치 중 상호작용 방지
 ARG DEBIAN_FRONTEND=noninteractive
@@ -15,7 +15,7 @@ RUN apt-get install git -y
 RUN mkdir -p /app
 WORKDIR /app
 
-RUN git clone https://github.com/dnfwlxo11/flask_classification_sampleServer.git /app
+RUN git clone https://${GIT_USER}:${GIT_ACCESS_KEY}@github.com/dnfwlxo11/flask_classification_sampleServer.git /app
 
 COPY ./app /app
 

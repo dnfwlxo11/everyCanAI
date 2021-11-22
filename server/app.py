@@ -63,28 +63,28 @@ def loadModels():
         try:
             result = []
 
-            path = './models'
+            modelPath = './models'
+            outputPath = './output'
 
-            modelList = os.listdir(path)
-            outputList = os.listdir('./output')
+            modelList = os.listdir(modelPath)
+            outputList = os.listdir(outputPath)
             
-
             if 'imagenet' in modelList:
                 modelList.remove('imagenet')
             if 'readme.md' in modelList:
                 modelList.remove('readme.md')
 
             for i in modelList:
-                modelFiles = os.listdir('{}/{}'.format(path, i))
-                if 'output_graph.pb' in modelFiles:
-                    result.append({'name': i, 'progress': '학습 완료'})
-                else:
-                    if i in outputList:
-                        isZip = os.listdir(os.path.join(outputList, i))
-                        if 'zipping.txt' in isZip:
-                            result.append({'name': i, 'progress': '결과 압축 중'})
+                if i in outputList:
+                    isZip = os.listdir(os.path.join(outputPath, i))
+                    modelFiles = os.listdir(os.path.join(modelPath, i))
+
+                    if 'output_graph.pb' in modelFiles and not 'zipping.txt' in isZip:
+                        result.append({'name': i, 'progress': '학습 완료'})
                     else:
-                        result.append({'name': i, 'progress': '학습 중'})
+                        result.append({'name': i, 'progress': '결과 압축 중'})
+                else:
+                    result.append({'name': i, 'progress': '학습 중'})
 
             return {'success': True, 'msg': '모델 목록을 불러오는데 성공했습니다.', 'models': result}
         except Exception as e:

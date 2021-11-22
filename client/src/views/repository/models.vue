@@ -58,6 +58,7 @@ export default {
         async loadModels() {
             let res = await axios.get('/api/models')
             this.models = res['data']['models']
+            console.log(res)
         },
 
         async downloadModel(fileName) {
