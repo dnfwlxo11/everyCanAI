@@ -17,6 +17,7 @@ def zipOutput(directoryName):
     downloadPath = '../output/{}'.format(directoryName)
     progressFilePath = os.path.join(downloadPath, 'zipping.txt')
 
+    os.mkdir(downloadPath)
     f = open(progressFilePath, 'w')
     f.close()
 
