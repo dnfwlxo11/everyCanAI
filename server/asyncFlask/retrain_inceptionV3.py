@@ -612,7 +612,7 @@ def startTrain(imagePath):
   FLAGS['print_misclassified_test_images'] = False
   FLAGS['model_dir'] = '../models/imagenet'
   FLAGS['bottleneck_dir'] = '../models/{}/bottleneck'.format(directoryName)
-  FLAGS['final_tensor_name'] = 'final_result'
+  FLAGS['final_tensor_name'] = 'softmax'
   FLAGS['flip_left_right'] = False
   FLAGS['random_crop'] = 0
   FLAGS['random_scale'] = 0

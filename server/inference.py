@@ -71,9 +71,11 @@ def create_graph(model=baseModel):
     """저장된(saved) GraphDef 파일로부터 graph를 생성하고 saver를 반환한다."""
     # 저장된(saved) graph_def.pb로부터 graph를 생성한다.
     with tf.gfile.FastGFile(model, 'rb') as f:
+        print('모델 읽어')
         graph_def = tf.GraphDef()
         graph_def.ParseFromString(f.read())
         _ = tf.import_graph_def(graph_def, name='')
+        print('모델 다 읽었어')
 
 def run_inference_on_image(imageBinary, model=baseLabel):
     image_data = imageBinary
@@ -92,31 +94,25 @@ def run_inference_on_image(imageBinary, model=baseLabel):
     create_graph(modelsFullPath)
 
     with tf.Session() as sess:
-        print(sess.graph)
         # softmax_tensor = sess.graph.get_tensor_by_name('final_result:0')
+        
         softmax_tensor = sess.graph.get_tensor_by_name('softmax:0')
-        predictions = sess.run(softmax_tensor,
-                               {'DecodeJpeg/contents:0': image_data})
+        predictions = sess.run(softmax_tensor, {'DecodeJpeg/contents:0': image_data})
+                   
         predictions = np.squeeze(predictions)
 
-        print('node_lookup')
         node_lookup = NodeLookup()
 
         top_k = predictions.argsort()[-5:][::-1] 
-        print(top_k, '리스트')
         f = open(labelsFullPath, 'rb')
         lines = f.readlines()
         labels = [str(w).replace("\\n", "").replace('b\'', '').replace('\'', '') for w in lines]
         classes = []
         scores = []
 
-        print(classes, 'classes')
-
         for node_id in top_k:
             classes.append(node_lookup.id_to_string(node_id))
             scores.append(predictions[node_id])
-        
-        print(classes)
 
         sess.close()
 
