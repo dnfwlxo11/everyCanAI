@@ -80,7 +80,8 @@ def loadModels():
                 else:
                     if 'otuput.zip' in outputList:
                         result.append({'name': i, 'progress': '결과 압축 중'})
-                    result.append({'name': i, 'progress': '학습 중'})
+                    else:
+                        result.append({'name': i, 'progress': '학습 중'})
 
             return {'success': True, 'msg': '모델 목록을 불러오는데 성공했습니다.', 'models': result}
         except Exception as e:

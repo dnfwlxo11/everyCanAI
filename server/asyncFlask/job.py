@@ -13,10 +13,10 @@ app = Celery('job', broker=BROKER_URL, backend=CELERY_RESULT_BACKEND)
 rd = redis.StrictRedis(host='localhost', port=16006, db=0)
 
 def zipOutput(directoryName):
-    modelPath = '/app/server/models/{}'.format(directoryName)
-    downloadPath = '/app/server/output/{}'.format(directoryName)
+    modelPath = '../models/{}'.format(directoryName)
+    downloadPath = '../output/{}'.format(directoryName)
 
-    if not directoryName in os.listdir('/app/server/output'):
+    if not directoryName in os.listdir('../output'):
         shutil.make_archive(os.path.join(downloadPath, 'output'), 'zip', modelPath)
 
 @app.task(name="test")
