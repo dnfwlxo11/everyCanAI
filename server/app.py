@@ -78,7 +78,7 @@ def loadModels():
                 if 'output_graph.pb' in modelFiles:
                     result.append({'name': i, 'progress': '학습 완료'})
                 else:
-                    if 'otuput.zip' in outputList:
+                    if 'zipping.txt' in outputList:
                         result.append({'name': i, 'progress': '결과 압축 중'})
                     else:
                         result.append({'name': i, 'progress': '학습 중'})

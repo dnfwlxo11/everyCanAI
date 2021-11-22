@@ -15,9 +15,15 @@ rd = redis.StrictRedis(host='localhost', port=16006, db=0)
 def zipOutput(directoryName):
     modelPath = '../models/{}'.format(directoryName)
     downloadPath = '../output/{}'.format(directoryName)
+    progressFilePath = os.path.join(downloadPath, 'zipping.txt')
+
+    f = open(progressFilePath, 'w')
+    f.close()
 
     if not directoryName in os.listdir('../output'):
         shutil.make_archive(os.path.join(downloadPath, 'output'), 'zip', modelPath)
+
+    os.remove(progressFilePath)
 
 @app.task(name="test")
 def test(x, y):
