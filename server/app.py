@@ -67,6 +67,7 @@ def loadModels():
 
             modelList = os.listdir(path)
             outputList = os.listdir('./output')
+            
 
             if 'imagenet' in modelList:
                 modelList.remove('imagenet')
@@ -78,8 +79,10 @@ def loadModels():
                 if 'output_graph.pb' in modelFiles:
                     result.append({'name': i, 'progress': '학습 완료'})
                 else:
-                    if 'zipping.txt' in outputList:
-                        result.append({'name': i, 'progress': '결과 압축 중'})
+                    if i in outputList:
+                        isZip = os.listdir(os.path.join(outputList, i))
+                        if 'zipping.txt' in isZip:
+                            result.append({'name': i, 'progress': '결과 압축 중'})
                     else:
                         result.append({'name': i, 'progress': '학습 중'})
 
@@ -136,8 +139,15 @@ def downloadModel(filename):
             modelPath = './models/{}'.format(projectName)
             downloadPath = './output/{}'.format(projectName)
 
-            if not projectName in os.listdir('./output'):
-                shutil.make_archive(os.path.join(downloadPath, 'output'), 'zip', modelPath)
+            # if not projectName in os.listdir('./output'):
+            #     progressFilePath = os.path.join(downloadPath, 'zipping.txt')
+            #     os.mkdir(downloadPath)
+            #     print(os.listdir(downloadPath), 'downloadPath')
+            #     if not 'zipping.txt' in os.listdir(downloadPath):
+            #         f = open(progressFilePath, 'w')
+            #         f.close()
+            #     shutil.make_archive(os.path.join(downloadPath, 'output'), 'zip', modelPath)
+            #     os.remove(progressFilePath)
 
             return send_file(os.path.join(downloadPath, 'output.zip'), mimetype='application/zip', as_attachment=True, attachment_filename='output.zip')
         except Exception as e:
