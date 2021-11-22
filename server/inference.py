@@ -115,7 +115,10 @@ def run_inference_on_image(imageBinary, model=baseLabel):
         scores = []
 
         for node_id in top_k:
-            classes.append(node_lookup.id_to_string(node_id))
+            if model == 'base':
+              classes.append(node_lookup.id_to_string(node_id))
+            else:
+              classes.append(labels[node_id])
             scores.append(predictions[node_id])
 
         sess.close()
