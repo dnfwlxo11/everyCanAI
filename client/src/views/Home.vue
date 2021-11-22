@@ -5,8 +5,8 @@
         <div class="col-md-4 mb-3">
           <div class="card d-flex align-items-center justify-content-center basic" @click="$router.push({path: 'inference'})">
             <div class="text-left">
-              <strong>기본 모델로 이미지를 분류하고 싶어요.</strong><br>
-              이미지 포맷을 업로드하면 됩니다.
+              <strong>기본, 커스텀 모델로 분류하고 싶어요.</strong><br>
+              이미지를 업로드하면 됩니다.
             </div>
           </div>
         </div>
@@ -32,7 +32,6 @@
 </template>
 
 <script>
-// @ is an alias to /src
 
 export default {
   name: 'Models'
