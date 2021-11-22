@@ -96,7 +96,11 @@ def run_inference_on_image(imageBinary, model=baseLabel):
     with tf.Session() as sess:
         # softmax_tensor = sess.graph.get_tensor_by_name('final_result:0')
         
-        softmax_tensor = sess.graph.get_tensor_by_name('softmax:0')
+        softmax_tensor = ''
+        if model == 'base':
+          softmax_tensor = sess.graph.get_tensor_by_name('softmax:0')
+        else:
+          softmax_tensor = sess.graph.get_tensor_by_name('final_result:0')
         predictions = sess.run(softmax_tensor, {'DecodeJpeg/contents:0': image_data})
                    
         predictions = np.squeeze(predictions)
