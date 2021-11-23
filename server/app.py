@@ -148,8 +148,6 @@ def downloadModel(filename):
 def deleteModel(filename):
     if request.method == 'POST':
         try:
-
-
             return {'success': True, 'msg': '{} 프로젝트의 모델을 삭제했습니다.'.format(filename)}
         except Exception as e:
             return {'success': False, 'error': e}
@@ -177,4 +175,4 @@ def getImage():
             return {'success': False, 'msg': '추론도중 에러가 발생했습니다.', 'error': e}
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=False)

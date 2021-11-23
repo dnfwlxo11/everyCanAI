@@ -253,25 +253,30 @@
                 let res = await axios.post('/api/upload', uploadFiles)
 
                 if (res['data']['success']) {
-                    this.imagePath = res['data']['path']
+                    this.isDisabled = false
                     this.isProgress = false
+                    this.imagePath = res['data']['path']
                 } else {
                     this.isProgress = false
+                    this.$router.push('/models')
                 }
-
-                this.isDisabled = false
             },
 
             async trainImage() {
                 let res = await axios.post('/api/train', this.imagePath)
 
+                this.isProgress = true
+
                 if (res['data']['success']) {
+                    this.isDisabled = false
                     this.$router.push('/models')
                 } else {
-                    this.isProgress = true
+                    isDisabled
                     this.isDisabled = true
                     return false
                 }
+
+                this.isDisabled = false
             },
 
             async wooUploadImage() {
