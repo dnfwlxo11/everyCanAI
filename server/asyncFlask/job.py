@@ -20,6 +20,7 @@ def restartCelery():
     cmd = 'celery multi start -A job worker --loglevel=debug --logfile="./%n%I.log" --pidfile="./%n.pid" --autoscale=8,1 --max-tasks-per-child=1'
     subprocess.call(shlex.split(cmd))
 
+@app.task(name="zip", bind=True, max_retries=5, soft_time_limit=600)
 def zipOutput(directoryName):
     try:
         modelPath = '../models/{}'.format(directoryName)
@@ -37,7 +38,7 @@ def zipOutput(directoryName):
         os.remove(progressFilePath)
     except Exception as e:
         print(e)
-        f = open(os.path.join(downloadPath, 'error.txt'), 'w')
+        f = open(os.path.join(modelPath, 'error.txt'), 'w')
         f.close()
 
 @app.task(name="train", bind=True, max_retries=5, soft_time_limit=600)
@@ -47,7 +48,7 @@ def train(self, imagePath):
 
         directoryName = imagePath.split('/')[2]
 
-        zipOutput(directoryName)
+        zipOutput.delay(directoryName)
         print()
 
         return {'success': True}
