@@ -131,12 +131,6 @@ def modelTrain():
         except Exception as e:
             return {'success': False, 'error': e}
 
-@app.route('/api/redis', methods=['POST'])
-def redisTest():
-    if request.method == 'POST':
-        result = test.delay(1,4)
-        return {'success': True}
-
 @app.route('/api/download/<filename>', methods=['POST'])
 def downloadModel(filename):
     if request.method == 'POST':
@@ -145,16 +139,6 @@ def downloadModel(filename):
             projectName = filename
             modelPath = './models/{}'.format(projectName)
             downloadPath = './output/{}'.format(projectName)
-
-            # if not projectName in os.listdir('./output'):
-            #     progressFilePath = os.path.join(downloadPath, 'zipping.txt')
-            #     os.mkdir(downloadPath)
-            #     print(os.listdir(downloadPath), 'downloadPath')
-            #     if not 'zipping.txt' in os.listdir(downloadPath):
-            #         f = open(progressFilePath, 'w')
-            #         f.close()
-            #     shutil.make_archive(os.path.join(downloadPath, 'output'), 'zip', modelPath)
-            #     os.remove(progressFilePath)
 
             return send_file(os.path.join(downloadPath, 'output.zip'), mimetype='application/zip', as_attachment=True, attachment_filename='output.zip')
         except Exception as e:

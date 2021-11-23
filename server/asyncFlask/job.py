@@ -8,11 +8,11 @@ import retrain_inceptionV3 as retrain
 import os
 import shutil
 
-BROKER_URL = 'redis://redis-local/0'
-CELERY_RESULT_BACKEND = 'redis://redis-local/0'
+BROKER_URL = 'redis://daein_redis/0'
+CELERY_RESULT_BACKEND = 'redis://daein_redis/0'
 
 app = Celery('job', broker=BROKER_URL, backend=CELERY_RESULT_BACKEND)
-rd = redis.StrictRedis(host='localhost', port=6379, db=0)
+rd = redis.StrictRedis(host='localhost', port=16006, db=0)
 
 def restartCelery():
     cmd = 'pkill -9 celery'
@@ -40,16 +40,6 @@ def zipOutput(directoryName):
         f = open(os.path.join(downloadPath, 'error.txt'), 'w')
         f.close()
 
-@app.task(name="test")
-def test(x, y):
-    sumi = 0
-
-    for i in range(1, 100000000):
-        sumi += (x+y+i)
-    
-    print(sumi, '완료')
-    return sumi
-
 @app.task(name="train", bind=True, max_retries=5, soft_time_limit=600)
 def train(self, imagePath):
     try:
@@ -64,4 +54,6 @@ def train(self, imagePath):
     except Exception as e:
         print(e)
         self.retry(countdown=5, exc=e)
+        f = open(os.path.join(imagePath, 'error.txt'), 'w')
+        f.close()
         return {'success': False, 'error': e}
