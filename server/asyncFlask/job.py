@@ -17,10 +17,9 @@ rd = redis.StrictRedis(host='localhost', port=16006, db=0)
 def restartCelery():
     cmd = 'pkill -9 celery'
     subprocess.call(shlex.split(cmd))
-    cmd = 'celery multi start -A job worker --loglevel=debug --logfile="./%n%I.log" --pidfile="./%n.pid" --autoscale=8,1 --max-tasks-per-child=1'
+    cmd = 'celery multi start -A job worker --loglevel=debug --logfile="./%n%I.log" --pidfile="./%n.pid" --autoscale=2,1 --max-tasks-per-child=1'
     subprocess.call(shlex.split(cmd))
 
-@app.task(name="zip", bind=True, max_retries=5, soft_time_limit=600)
 def zipOutput(directoryName):
     try:
         modelPath = '../models/{}'.format(directoryName)
