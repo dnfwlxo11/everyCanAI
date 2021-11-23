@@ -37,7 +37,6 @@
                     </div>
                     <div>
                         <button class="btn btn-outline-primary mb-3" @click="inference">분류하기</button>
-                        <button class="btn btn-outline-primary" @click="inferenceWoo">분류하기 (우강)</button>
                     </div>
                 </div>
                 <div class="col-md-5">
@@ -154,31 +153,7 @@
                     }
                 }
             },
-
-            async inferenceWoo() {
-                let bodyForm = new FormData()
-                bodyForm.append('file', this.file)
-                bodyForm.append('model', this.selectModel == 'base' ? 'base' : this.models[this.selectModel]['name'])
-                console.log(this.selectModel)
-
-                let res = await axios.post('/woo/inference', bodyForm, {
-                    header: {
-                        'Content-Type': 'multipart/form-data'
-                    }
-                })
-
-                if (res['data']['success']) {
-                    this.isComplate = true
-                    let tmp = res['data']['predict']
-
-                    if (!tmp.length) {
-                        this.predict = '이미지에서 분류할 대상이 없습니다.'
-                    } else {
-                        this.predict = `객체명: ${tmp[0][0]}\n정확도: ${tmp[0][1]}%`
-                    }
-                }
-            },
-
+            
             async loadModels() {
                 let res = await axios.get('/api/models')
                 this.models = res['data']['models']

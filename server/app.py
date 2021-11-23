@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from flask import Flask, request, send_file, render_template
+from flask import Flask, request, send_file, render_template, current_app
 import inference
 import base64
 import os
@@ -9,9 +9,11 @@ from flask_cors import CORS
 from asyncFlask.job import test, train
 import shutil
 
-os.chdir('/app/server')
+# os.chdir('/app/server')
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='./static/dist', template_folder='./static/dist', static_url_path='')
+app.config.from_object(__name__)
+
 cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 # 한글 깨짐 해결 설정
@@ -162,6 +164,8 @@ def downloadModel(filename):
 def deleteModel(filename):
     if request.method == 'POST':
         try:
+
+
             return {'success': True, 'msg': '{} 프로젝트의 모델을 삭제했습니다.'.format(filename)}
         except Exception as e:
             return {'success': False, 'error': e}
