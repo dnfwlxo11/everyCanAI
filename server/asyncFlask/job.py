@@ -47,8 +47,7 @@ def train(self, imagePath):
 
         directoryName = imagePath.split('/')[2]
 
-        zipOutput.delay(directoryName)
-        print()
+        zipOutput(directoryName)
 
         return {'success': True}
     except Exception as e:
