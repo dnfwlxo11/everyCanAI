@@ -7,3 +7,4 @@ flask-cors==3.0.10
 Image==1.5.33
 celery==5.2.1
 redis==4.0.0
+watchdog==2.1.6

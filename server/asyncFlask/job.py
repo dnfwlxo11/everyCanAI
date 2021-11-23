@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from celery import Celery
+import shlex
+import subprocess
 import redis
 import retrain_inceptionV3 as retrain
 import os
@@ -11,6 +13,12 @@ CELERY_RESULT_BACKEND = 'redis://daein_redis/0'
 
 app = Celery('job', broker=BROKER_URL, backend=CELERY_RESULT_BACKEND)
 rd = redis.StrictRedis(host='localhost', port=16006, db=0)
+
+def restartCelery():
+    cmd = 'pkill -9 celery'
+    subprocess.call(shlex.split(cmd))
+    cmd = 'celery multi start -A job worker --loglevel=debug --logfile="./%n%I.log" --pidfile="./%n.pid"'
+    subprocess.call(shlex.split(cmd))
 
 def zipOutput(directoryName):
     try:
@@ -31,6 +39,7 @@ def zipOutput(directoryName):
         print(e)
         f = open(os.path.join(downloadPath, 'error.txt'), 'w')
         f.close()
+        restartCelery()
 
 @app.task(name="test")
 def test(x, y):
