@@ -19,7 +19,7 @@
                             <div class="upload-div" type="fileUpload" @dragenter="onDragenter" @dragover="onDragover"
                                 @dragleave="onDragleave" @drop="onDrop" @click="onClick">
                                 <div v-if="file==null"
-                                    class="h-100 d-flex align-items-center justify-content-center file-upload align-items-center">
+                                    class="d-flex align-items-center justify-content-center align-items-center"  style="height: 350px">
                                     <strong>Drag & Drop Files</strong>
                                 </div>
                                 <div v-else>

@@ -1,4 +1,13 @@
 module.exports = {
+    css: {
+        loaderOptions: {
+            sass: {
+                prependData: `     
+                @import "@/assets/scss/_modal.scss";
+                `
+            }        
+        }
+    },
      // 개발 서버 설정
      devServer: {
         // 프록시 설정

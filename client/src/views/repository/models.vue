@@ -5,7 +5,7 @@
                 <div class="col mb-3"><div><i class="mdi mdi-home-outline" @click="$router.push({path: '/'})"></i></div>홈</div>
             </div>
             <div class="row d-flex justify-content-center align-items-center">
-                <table class="h-100 w-100" border="1">
+                <table v-if="!isProgress" class="h-100 w-100" border="1">
                     <th>번호</th>
                     <th>프로젝트 명</th>
                     <th>학습 완료 여부</th>
@@ -31,6 +31,13 @@
                         </td>
                     </tr>
                 </table>
+                <div v-else>
+                    <i class="mdi mdi-loading mdi-spin mr-2"></i>
+                    <span>데이터 로딩 중입니다.</span>
+                </div>
+            </div>
+            <div class="row d-flex justify-content-center align-items-center">
+                
             </div>
         </div>
     </div>
@@ -42,7 +49,8 @@ import axios from 'axios'
 export default {
     data() {
         return {
-            models: []
+            models: [],
+            isProgress: false,
         }
     },
 
@@ -56,9 +64,10 @@ export default {
         },
 
         async loadModels() {
+            this.isProgress = true
             let res = await axios.get('/api/models')
             this.models = res['data']['models']
-            console.log(res)
+            this.isProgress = false
         },
 
         async downloadModel(fileName) {
@@ -76,18 +85,24 @@ export default {
         },
 
         async deleteModel(fileName) {
+            this.isProgress = true
+
             let res = await axios.post(`/api/delete/${fileName}`)
-            console.log(res)
+
+            if (res.data['success']) {
+                this.isProgress = false
+                console.log('삭제 성공')
+            } else {
+                this.isProgress = false
+                console.log('삭제 실패')
+            }
+            
         }
     }
 }
 </script>
 
 <style>
-    html, body {
-        height: 100%;
-    }
-
     ul {
         list-style: none;
     }
