@@ -41,9 +41,9 @@ def zipOutput(directoryName):
         f.close()
 
 @app.task(name="train", bind=True, max_retries=5, soft_time_limit=600)
-def train(imagePath):
+def train(self, imagePath):
     try:
-        id = train.request.id
+        id = self.request.id
         result = retrain.startTrain(imagePath)
 
         directoryName = imagePath.split('/')[2]
