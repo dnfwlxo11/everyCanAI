@@ -76,13 +76,8 @@ def loadModels():
             dbList = os.listdir(dbPath)
             modelList = os.listdir(modelPath)
             outputList = os.listdir(outputPath)
-            
-            if 'imagenet' in modelList:
-                modelList.remove('imagenet')
-            if 'readme.md' in modelList:
-                modelList.remove('readme.md')
 
-            for i in modelList:
+            for i in dbList:
                 if i in outputList:
                     isZip = os.listdir(os.path.join(outputPath, i))
                     modelFiles = os.listdir(os.path.join(modelPath, i))
