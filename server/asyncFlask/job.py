@@ -41,19 +41,17 @@ def zipOutput(directoryName):
         f.close()
 
 @app.task(name="train", bind=True, max_retries=5, soft_time_limit=600)
-def train(self, imagePath):
+def train(imagePath):
     try:
+        id = train.request.id
         result = retrain.startTrain(imagePath)
 
         directoryName = imagePath.split('/')[2]
 
         zipOutput(directoryName)
-        print(train.request.id)
+        print()
 
         return {'success': True}
     except Exception as e:
-        print(e)
-        self.retry(countdown=5, exc=e)
-        f = open(os.path.join(imagePath, 'error.txt'), 'w')
-        f.close()
+        id.retry(countdown=5, exc=e)
         return {'success': False, 'error': e}

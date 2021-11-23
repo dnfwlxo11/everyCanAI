@@ -9,7 +9,7 @@ from flask_cors import CORS
 from asyncFlask.job import train
 import shutil
 
-os.chdir('/app/server')
+# os.chdir('/app/server')
 
 app = Flask(__name__, static_folder='./static/dist', template_folder='./static/dist', static_url_path='')
 app.config.from_object(__name__)
@@ -69,9 +69,11 @@ def loadModels():
         try:
             result = []
 
+            dbPath = './db'
             modelPath = './models'
             outputPath = './output'
 
+            dbList = os.listdir(dbPath)
             modelList = os.listdir(modelPath)
             outputList = os.listdir(outputPath)
             
@@ -90,9 +92,13 @@ def loadModels():
                         result.append({'name': i, 'progress': '학습 완료'})
                     else:
                         result.append({'name': i, 'progress': '결과 압축 중'})
+                elif i in modelList:
+                    if 'error.txt' in os.listdir(os.path.join(modelPath, i)):
+                        result.append({'name': i, 'progress': '에러 발생'})
+                    else:
+                        result.append({'name': i, 'progress': '학습 중'})
                 else:
-                    result.append({'name': i, 'progress': '학습 중'})
-
+                    result.append({'name': i, 'progress': '학습 요청 대기'})
             return {'success': True, 'msg': '모델 목록을 불러오는데 성공했습니다.', 'models': result}
         except Exception as e:
             return {'success': False, 'msg': '모델 목록을 불러오는 중 에러가 발생했습니다.', 'error': e}
@@ -175,4 +181,4 @@ def getImage():
             return {'success': False, 'msg': '추론도중 에러가 발생했습니다.', 'error': e}
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=False)
+    app.run(host='0.0.0.0', port=5000, debug=True)
