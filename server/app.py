@@ -8,6 +8,7 @@ import time
 from flask_cors import CORS
 from asyncFlask.job import train
 import shutil
+import random
 
 os.chdir('/app/server')
 
@@ -29,8 +30,7 @@ def parsePredict(classes, scores, conf):
 
 def makeDirectory(files):
     # 현재 시간으로 폴더를 만듦
-    now = time.localtime()
-    dirName = '{}{}{}_{}{}{}'.format(now.tm_year, now.tm_mon, now.tm_mday, now.tm_hour, now.tm_min, now.tm_sec)
+    dirName = '{}_{}_{}'.format(random.randrange(1,10000), time.strftime('%Y%m%d_%H%M%S', time.localtime(time.time())), random.randrange(1,10000))
 
     if not os.path.exists('./db/{}'.format(dirName)):
         os.makedirs('./db/{}'.format(dirName))
@@ -83,7 +83,6 @@ def loadModels():
                 modelList.remove('readme.md')
 
             for i in modelList:
-                print(outputList)
                 if i in outputList:
                     isZip = os.listdir(os.path.join(outputPath, i))
                     modelFiles = os.listdir(os.path.join(modelPath, i))
@@ -154,6 +153,10 @@ def downloadModel(filename):
 def deleteModel(filename):
     if request.method == 'POST':
         try:
+            os.rmdir('./db/{}'.format(filename))
+            os.rmdir('./models/{}'.format(filename))
+            os.rmdir('./output/{}'.format(filename))
+
             return {'success': True, 'msg': '{} 프로젝트의 모델을 삭제했습니다.'.format(filename)}
         except Exception as e:
             return {'success': False, 'error': e}
