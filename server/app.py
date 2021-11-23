@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from flask import Flask, request, send_file
+from flask import Flask, request, send_file, render_template
 import inference
 import base64
 import os
@@ -48,6 +48,10 @@ def makeDirectory(files):
                 f.write(image)
 
     return {'path': './db/{}'.format(dirName)}
+
+@app.route('/')
+def index():
+    return render_template('index.html')
 
 @app.route('/api', methods=['GET'])
 def hello():
