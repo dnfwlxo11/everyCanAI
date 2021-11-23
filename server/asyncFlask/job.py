@@ -17,7 +17,7 @@ rd = redis.StrictRedis(host='localhost', port=16006, db=0)
 def restartCelery():
     cmd = 'pkill -9 celery'
     subprocess.call(shlex.split(cmd))
-    cmd = 'celery multi start -A job worker --loglevel=debug --logfile="./%n%I.log" --pidfile="./%n.pid"'
+    cmd = 'celery multi start -A job worker --loglevel=debug --logfile="./%n%I.log" --pidfile="./%n.pid" --autoscale=8,1 --max-tasks-per-child=1'
     subprocess.call(shlex.split(cmd))
 
 def zipOutput(directoryName):
@@ -43,7 +43,6 @@ def zipOutput(directoryName):
 @app.task(name="train", bind=True, max_retries=5, soft_time_limit=600)
 def train(self, imagePath):
     try:
-        id = self.request.id
         result = retrain.startTrain(imagePath)
 
         directoryName = imagePath.split('/')[2]
@@ -53,5 +52,7 @@ def train(self, imagePath):
 
         return {'success': True}
     except Exception as e:
-        id.retry(countdown=5, exc=e)
+        self.retry(countdown=5, exc=e)
+        f = open(os.path.join('../models', directoryName, 'error.txt'), 'w')
+        f.close()
         return {'success': False, 'error': e}
