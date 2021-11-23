@@ -6,7 +6,7 @@ import base64
 import os
 import time
 from flask_cors import CORS
-from asyncFlask.job import test, train
+from asyncFlask.job import train
 import shutil
 
 # os.chdir('/app/server')
