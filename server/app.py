@@ -6,10 +6,10 @@ import base64
 import os
 import time
 from flask_cors import CORS
-from asyncFlask.job import test, train
+from asyncFlask.job import train
 import shutil
 
-# os.chdir('/app/server')
+os.chdir('/app/server')
 
 app = Flask(__name__, static_folder='./static/dist', template_folder='./static/dist', static_url_path='')
 app.config.from_object(__name__)
