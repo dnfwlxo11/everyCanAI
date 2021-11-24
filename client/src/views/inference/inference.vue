@@ -11,7 +11,7 @@
                 <div class="col-md-5">
                     <div class="card">
                         <div class="card-header">
-                            <strong>분류하고 싶은 사진</strong> <small>(Model. InceptionV3)</small>
+                            <strong>분류하고 싶은 사진</strong>
                             <i v-if="file!=null" class="mdi mdi-refresh ml-3" style="font-size: 18px;color: black;"
                                 @click="deleteImage"></i>
                         </div>
@@ -19,7 +19,7 @@
                             <div class="upload-div" type="fileUpload" @dragenter="onDragenter" @dragover="onDragover"
                                 @dragleave="onDragleave" @drop="onDrop" @click="onClick">
                                 <div v-if="file==null"
-                                    class="d-flex align-items-center justify-content-center align-items-center"  style="height: 350px">
+                                    class="d-flex align-items-center justify-content-center align-items-center" style="height: 350px">
                                     <strong>Drag & Drop Files</strong>
                                 </div>
                                 <div v-else>

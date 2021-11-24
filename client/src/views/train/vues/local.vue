@@ -24,15 +24,13 @@
                             <div class="card-header pb-2">
                                 <div class="row align-items-center">
                                     <div class="col-2 text-left" @click="moveLeftClass">
-                                        <i class="mdi mdi-arrow-left" style="font-size: 16px;"></i>
+                                        <i v-if="currIdx" class="mdi mdi-arrow-left" style="font-size: 16px;"></i>
                                     </div>
                                     <div class="col-8">
                                         <input class="text-center p-0 m-0 card-title" type="text"
-                                            v-model="classes[currIdx]" :disabled='isDisabledClass' />
+                                            v-model="classes[currIdx]" />
                                         <i v-if="isDisabledClass" class="mdi mdi-clipboard-edit-outline ml-3"
                                             style="font-size: 16px;" @click="editClassName()"></i>
-                                        <i v-else class="mdi mdi-check ml-3" style="font-size: 16px;"
-                                            @click="isDisabledClass=true" @blur="isDisabledClass=true"></i>
                                     </div>
                                     <div class="col-2 text-right">
                                         <i v-if="currIdx==classes.length-1" class="mdi mdi-folder-multiple-plus-outline"
@@ -44,34 +42,46 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="card-body local p-0">
-                                <div class="upload-div" type="fileUpload" @dragenter="onDragenter"
-                                    @dragover="onDragover" @dragleave="onDragleave" @drop="onDrop" @click="onClick">
-                                    <div v-if="!fileList[currIdx].length"
-                                        class="d-flex align-items-center justify-content-center file-upload align-items-center"
-                                        :class="isDragged ? 'dragged' : ''" style="height: 500px">
-                                        <strong>Drag & Drop Files</strong>
-                                    </div>
+                            <div class="card-body p-0 d-flex align-items-center justify-content-center align-items-center"
+                                type="fileUpload" @dragenter="onDragenter" @dragover="onDragover"
+                                @dragleave="onDragleave" @drop="onDrop" @click="onClick">
+                                <div v-if="!fileList[currIdx].length"
+                                    class="d-flex align-items-center justify-content-center align-items-center"
+                                    :class="isDragged ? 'dragged' : ''" style="height: 500px">
+                                    <strong style="width: 100%">Drag & Drop Files</strong>
                                 </div>
-                                <input style="display: none;" type="file" ref="fileInput" @change="onFileChange" multiple>
-                                <div v-for="(file, index) in fileList[currIdx]" :key="index"
-                                    @change="fileList[currIdx]">
-                                    <div style="float: left; padding: 5px">
-                                        <div style="position: relative;">
-                                            <img class="upload-image" :src="file.src"
-                                                :width='parseInt(cardWidth / 5) - 30'
-                                                :height='parseInt((cardWidth / 5) * 0.56)'>
-                                            <div style="position: absolute;top: 0; right:0"
-                                                @click="handleRemove(index)">
-                                                <a href="javascript:;"><i class="mdi mdi-delete"></i></a>
+                                <div v-else class="w-100" style="max-height: 500px; overflow-y:auto; overflow-x:hidden;">                                    
+                                    <div class="row m-0">
+                                        <div class="col-md-3 p-1" v-for="(file, index) in fileList[currIdx]" :key="index">
+                                            <div class="card">
+                                                <div style="position: relative;">
+                                                    <img class="w-100"
+                                                        height="100px"
+                                                        :src="imageResize(file).src" @click.stop="">
+                                                    <div style="position: absolute;top: 0; right:0"
+                                                        @click.stop="handleRemove(index)">
+                                                        <a href="javascript:;"><i class="mdi mdi-delete"></i></a>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    {{ file.name }}
+                                                </div>
                                             </div>
                                         </div>
-                                        <div>
-                                            {{ file.name }}
+                                        <div class="col-md-3 p-1">
+                                            <div class="card">
+                                                <div style="position: relative;">
+                                                    <i class="mdi mdi-plus w-100" style="font-size: 65px"></i>
+                                                </div>
+                                                <div>
+                                                    파일 추가하기
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                            <input style="display: none;" type="file" ref="fileInput" @change="onFileChange" multiple>
                         </div>
                     </div>
                     <div class="col-md-2">
@@ -92,12 +102,14 @@
                 </div>
             </div>
         </div>
-        <progress-modal v-if="isProgress" msg="작업을 처리 중입니다."/>
-        <alert-modal v-if="error" msg="클래스가 2개이상, 각 사진이 30장 이상인지 확인해주세요." @on-close="error=false" @on-confirm="error=false" />
+        <progress-modal v-if="isProgress" msg="작업을 처리 중입니다." />
+        <alert-modal v-if="error" msg="클래스가 2개이상, 각 사진이 30장 이상인지 확인해주세요." @on-close="error=false"
+            @on-confirm="error=false" />
     </div>
 </template>
 
 <script>
+    import loadImage from 'blueimp-load-image'
     import axios from 'axios'
 
     export default {
@@ -202,7 +214,7 @@
             },
 
             deleteClass(index) {
-                if (index) {
+                if (this.classes.length > 1) {
                     this.moveLeftClass();
                     this.$delete(this.classes, index)
                     this.$delete(this.fileList, index)
@@ -236,21 +248,33 @@
             },
 
             uploadImageCheck() {
+                let canTrain = true
+
                 // 클래스가 2개 미만이라면 false
                 if (this.classes.length < 2) {
                     this.error = true
-                    return false
+                    canTrain = false
                 }
 
                 this.fileList.forEach(item => {
                     // 클래스 중 하나라도 30장 이하라면 false
                     if (item.length < 30) {
                         this.error = true
-                        return false
+                        canTrain = false
                     }
                 })
 
-                return true
+                return canTrain
+            },
+
+            imageResize(file) {
+                let newFile = loadImage(file, (img) => {
+                    return img
+                }, {
+                    maxWidth: 224,
+                    maxHeight: 224
+                })
+                return newFile
             },
 
             async uploadImage() {
