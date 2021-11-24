@@ -4,7 +4,6 @@
             <div class="row align-items-center mb-2">
                 <div class="col-md-2 text-left">
                     <button class="btn btn-primary mb-2" @click="uploadImage" :disabled='!isDisabled'>사진 업로드</button>
-                    <button class="btn btn-primary" @click="wooUploadImage" :disabled='!isDisabled'>사진 업로드 (우강)</button>
                 </div>
                 <div class="col-md-8">
                     <div>
@@ -16,7 +15,6 @@
                 </div>
                 <div class="col-md-2 text-right">
                     <button class="btn btn-danger mb-2" @click="trainImage" :disabled='isDisabled'>학습 시작</button>
-                    <button class="btn btn-danger" @click="wooTrainImage" :disabled='isDisabled'>학습 시작 (우강)</button>
                 </div>
             </div>
             <div class="mb-3">
@@ -95,6 +93,7 @@
             </div>
         </div>
         <progress-modal v-if="isProgress" msg="작업을 처리 중입니다."/>
+        <alert-modal v-if="error" msg="클래스가 2개이상, 각 사진이 30장 이상인지 확인해주세요." @on-close="error=false" @on-confirm="error=false" />
     </div>
 </template>
 
@@ -119,7 +118,8 @@
                 imagePath: '',
                 isDisabled: true,
                 isDisabledClass: true,
-                isProgress: false
+                isProgress: false,
+                error: false
             }
         },
 
@@ -236,12 +236,21 @@
             },
 
             uploadImageCheck() {
-                let cnt = 0
+                // 클래스가 2개 미만이라면 false
+                if (this.classes.length < 2) {
+                    this.error = true
+                    return false
+                }
+
                 this.fileList.forEach(item => {
-                    cnt += item.length
+                    // 클래스 중 하나라도 30장 이하라면 false
+                    if (item.length < 30) {
+                        this.error = true
+                        return false
+                    }
                 })
 
-                return cnt ? true : false
+                return true
             },
 
             async uploadImage() {
@@ -278,36 +287,6 @@
 
                 this.isDisabled = false
             },
-
-            async wooUploadImage() {
-                if (!this.uploadImageCheck()) return false
-
-                var uploadFiles = this.convertFiles()
-
-                this.isProgress = true
-                let res = await axios.post('/api/upload', uploadFiles)
-
-                if (res['data']['success']) {
-                    this.imagePath = res['data']['path']
-                    this.isProgress = false
-                } else {
-                    this.isProgress = false
-                }
-
-                this.isDisabled = false
-            },
-
-            async wooTrainImage() {
-                let res = await axios.post('/api/train', this.imagePath)
-
-                if (res['data']['success']) {
-                    this.$router.push('/models')
-                } else {
-                    this.isProgress = true
-                    this.isDisabled = true
-                    return false
-                }
-            }
         }
     }
 </script>

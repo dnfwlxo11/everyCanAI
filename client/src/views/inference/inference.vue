@@ -63,6 +63,7 @@
                 </div>
             </div>
         </div>
+        <progress-modal v-if="isProgress" msg="무엇인지 분류 중입니다."/>
     </div>
 </template>
 
@@ -77,6 +78,7 @@
                 file: null,
                 thumbnail: null,
                 isComplate: false,
+                isProgress: false,
                 predict: null,
                 models: [],
                 selectModel: 'base'
@@ -136,6 +138,8 @@
                 bodyForm.append('model', this.selectModel == 'base' ? 'base' : this.models[this.selectModel]['name'])
                 console.log(this.selectModel)
 
+                this.isProgress = true
+
                 let res = await axios.post('/api/inference', bodyForm, {
                     header: {
                         'Content-Type': 'multipart/form-data'
@@ -152,6 +156,8 @@
                         this.predict = `객체명: ${tmp[0][0]}\n정확도: ${tmp[0][1]}%`
                     }
                 }
+
+                this.isProgress = false
             },
             
             async loadModels() {
