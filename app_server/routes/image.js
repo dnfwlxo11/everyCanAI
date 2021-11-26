@@ -14,9 +14,9 @@ const storage = multer.diskStorage({
     }
 });
 
-router.post('/upload', upload.fields([{name: 'Class 1', maxCount: 100}]), (req, res, next) => {
+router.post('/upload', (req, res, next) => {
 
-    console.log(req.files)
+    // console.log(req.files)
 
     res.status(200).json({ 'success': true });
 });

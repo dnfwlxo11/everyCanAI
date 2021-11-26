@@ -248,15 +248,13 @@
             // },
 
             convertFiles() {
-                let form = document.createElement('form')
-                let formData = new FormData(form)
+                let formData = new FormData()
 
-                this.classes.forEach((item, idx) => {
-                    console.log(item, JSON.stringify(this.fileList[idx]))
-                    formData.append(item, JSON.stringify(this.fileList[idx]))
+                this.classes.forEach((value, idx) => {
+                    this.fileList[idx].forEach((item, idx) => {
+                        formData.append(`${value}`, item)
+                    })
                 })
-
-                console.log(formData)
 
                 return formData
             },
@@ -296,19 +294,20 @@
 
                 var uploadFiles = this.convertFiles()
 
-                console.log(uploadFiles)
-
                 this.isProgress = true
+
                 let res = await axios.post('/node/image/upload', uploadFiles, {
                     headers: {
                         'Content-Type': 'multipart/form-data'
                     }
                 })
 
+                console.log(res)
+
                 if (res['data']['success']) {
                     // this.isDisabled = false
                     this.isProgress = false
-                    this.imagePath = res['data']['path']
+                    // this.imagePath = res['data']['path']
                 } else {
                     this.isProgress = false
                     // this.$router.push('/models')
