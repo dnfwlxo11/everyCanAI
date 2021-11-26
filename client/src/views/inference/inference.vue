@@ -140,7 +140,7 @@
 
                 this.isProgress = true
 
-                let res = await axios.post('/api/inference', bodyForm, {
+                let res = await axios.post('/node/inference', bodyForm, {
                     header: {
                         'Content-Type': 'multipart/form-data'
                     }
@@ -161,7 +161,7 @@
             },
             
             async loadModels() {
-                let res = await axios.get('/api/models')
+                let res = await axios.get('/node/models')
                 this.models = res['data']['models']
             },
         }

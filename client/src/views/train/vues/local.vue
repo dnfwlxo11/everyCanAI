@@ -283,7 +283,7 @@
                 var uploadFiles = this.convertFiles()
 
                 this.isProgress = true
-                let res = await axios.post('/api/upload', uploadFiles)
+                let res = await axios.post('/node/upload', uploadFiles)
 
                 if (res['data']['success']) {
                     this.isDisabled = false
@@ -296,7 +296,7 @@
             },
 
             async trainImage() {
-                let res = await axios.post('/api/train', this.imagePath)
+                let res = await axios.post('/node/train', this.imagePath)
 
                 this.isProgress = true
 
