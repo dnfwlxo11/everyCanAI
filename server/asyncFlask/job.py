@@ -85,13 +85,9 @@ def train(self, imagePath):
                 A.append(f'{dbPath}/{i}/{j}')
             train_information[train_request_id]["info"]["images"][i]=A
 
-        print(train_information)
-
         rd.set("train_information", json.dumps(train_information))
 
         train_information_rd_get=json.loads(rd.get("train_information"))
-
-        print(train_information_rd_get[train_request_id]['info']['images']['Class 1'])
 
         return {'success': True}
     except Exception as e:
