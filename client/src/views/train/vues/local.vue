@@ -233,18 +233,32 @@
                 this.isDisabledClass = false
             },
 
+            // convertFiles() {
+            //     let result = {}
+
+            //     // 클래스명도 함께
+            //     result['classes'] = this.classes
+
+            //     // 첨부 파일 정리
+            //     this.fileList.forEach((item, idx) => {
+            //         result[this.classes[idx]] = item
+            //     })
+
+            //     return result
+            // },
+
             convertFiles() {
-                let result = {}
+                let form = document.createElement('form')
+                let formData = new FormData(form)
 
-                // 클래스명도 함께
-                result['classes'] = this.classes
-
-                // 첨부 파일 정리
-                this.fileList.forEach((item, idx) => {
-                    result[this.classes[idx]] = item
+                this.classes.forEach((item, idx) => {
+                    console.log(item, JSON.stringify(this.fileList[idx]))
+                    formData.append(item, JSON.stringify(this.fileList[idx]))
                 })
 
-                return result
+                console.log(formData)
+
+                return formData
             },
 
             uploadImageCheck() {
@@ -282,16 +296,22 @@
 
                 var uploadFiles = this.convertFiles()
 
+                console.log(uploadFiles)
+
                 this.isProgress = true
-                let res = await axios.post('/node/upload', uploadFiles)
+                let res = await axios.post('/node/image/upload', uploadFiles, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                })
 
                 if (res['data']['success']) {
-                    this.isDisabled = false
+                    // this.isDisabled = false
                     this.isProgress = false
                     this.imagePath = res['data']['path']
                 } else {
                     this.isProgress = false
-                    this.$router.push('/models')
+                    // this.$router.push('/models')
                 }
             },
 

@@ -1,9 +1,24 @@
 var express = require('express');
+const multer = require('multer');
 var router = express.Router();
 
-/* GET home page. */
-router.get('/upload', function(req, res, next) {
+const upload = multer();
+
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'uploads/');
+    },
   
+    filename: (req, file, cb) => {
+        cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
+    }
+});
+
+router.post('/upload', upload.fields([{name: 'Class 1', maxCount: 100}]), (req, res, next) => {
+
+    console.log(req.files)
+
+    res.status(200).json({ 'success': true });
 });
 
 module.exports = router;

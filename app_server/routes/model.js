@@ -3,14 +3,12 @@ var router = express.Router();
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
-    console.log(req.body);
+    console.log('hi');
 
     let sendData = {}
-    sendData['data'] = [{
-        'models': {
-            'name': '모델1',
-            'progress': '완료'
-        }
+    sendData['models'] = [{
+        'name': '모델1',
+        'progress': '완료'
     }]
 
     res.status(200).send(sendData);
