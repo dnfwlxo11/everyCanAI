@@ -4,14 +4,10 @@ from flask import Flask, request, send_file, render_template, current_app
 import inference
 import base64
 import os
-import time, requests
+import time
 from flask_cors import CORS
 from asyncFlask.job import train
-import shutil
 import random
-import json
-from PIL import Image
-from io import BytesIO
 
 os.chdir('/app/train_server')
 
@@ -130,8 +126,10 @@ def modelTrain():
         try:
             data = request.get_json()
             
+            print('넣었어')
             result = train.delay(data['proj'], data['images'])
 
+            print('끝났어')
             return {'success': True, 'msg': '학습 요청을 완료했습니다.', 'job_id': result}
         except Exception as e:
             return {'success': False, 'error': e}

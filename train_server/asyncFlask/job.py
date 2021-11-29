@@ -7,17 +7,15 @@ import redis
 import retrain_inceptionV3 as retrain
 import os
 import shutil
-import json
-from datetime import datetime
 from PIL import Image
 from io import BytesIO
 import requests
 
-BROKER_URL = 'redis://daein_redis/0'
-CELERY_RESULT_BACKEND = 'redis://daein_redis/0'
+BROKER_URL = 'redis://localhost:16006/0'
+CELERY_RESULT_BACKEND = 'redis://localhost:16006/0'
 
 app = Celery('job', broker=BROKER_URL, backend=CELERY_RESULT_BACKEND)
-rd = redis.StrictRedis(host='localhost', port=6379, db=0)
+rd = redis.StrictRedis(host='localhost', port=16006, db=0)
 
 def restartCelery():
     cmd = 'pkill -9 celery'
@@ -26,19 +24,22 @@ def restartCelery():
     subprocess.call(shlex.split(cmd))
 
 def saveTrainImage(proj, images):
-    if not os.path.exists('./db/{}'.format(proj)):
-        os.makedirs('./db/{}'.format(proj))
+    print('사진 다운 시작')
+    if not os.path.exists('../db/{}'.format(proj)):
+        os.makedirs('../db/{}'.format(proj))
     
     for i in images.keys():
-        if not os.path.exists('./db/{}/{}'.format(proj, i)):
-            os.makedirs('./db/{}/{}'.format(proj, i))
+        if not os.path.exists('../db/{}/{}'.format(proj, i)):
+            os.makedirs('../db/{}/{}'.format(proj, i))
 
         for j in images[i]:
             url = 'http://192.168.0.106:3000/images/{}/{}/{}'.format(proj, i, j)
-            savePath = './db/{}/{}/{}'.format(proj, i, j)
+            savePath = '../db/{}/{}/{}'.format(proj, i, j)
             res = requests.get(url)
             image = Image.open(BytesIO(res.content)).convert('RGB')
             image.save(savePath)
+
+    print('사진 다운 끝')
 
 def zipOutput(directoryName):
     try:
@@ -58,9 +59,10 @@ def zipOutput(directoryName):
         f = open(os.path.join(modelPath, 'error.txt'), 'w')
         f.close()
 
-@app.task(name="train", bind=True, max_retries=5, soft_time_limit=600)
-def train(self, directoryName, imagePath):
+@app.task(name="train")
+def train(directoryName, imagePath):
     try:
+        print(directoryName, imagePath)
         result = retrain.startTrain(imagePath)
 
         saveTrainImage(directoryName, imagePath)
@@ -111,7 +113,6 @@ def train(self, directoryName, imagePath):
 
         return {'success': True}
     except Exception as e:
-        self.retry(countdown=5, exc=e)
         f = open(os.path.join('../models', directoryName, 'error.txt'), 'w')
         f.close()
         return {'success': False, 'error': e}
