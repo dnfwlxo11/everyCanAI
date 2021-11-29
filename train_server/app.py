@@ -13,7 +13,7 @@ import json
 from PIL import Image
 from io import BytesIO
 
-# os.chdir('/app/server')
+os.chdir('/app/server')
 
 app = Flask(__name__, static_folder='./static/dist', template_folder='./static/dist', static_url_path='')
 app.config.from_object(__name__)
