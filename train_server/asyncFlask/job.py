@@ -14,7 +14,7 @@ BROKER_URL = 'redis://daein_redis/0'
 CELERY_RESULT_BACKEND = 'redis://daein_redis/0'
 
 app = Celery('job', broker=BROKER_URL, backend=CELERY_RESULT_BACKEND)
-rd = redis.StrictRedis(host='localhost', port=16006, db=0)
+rd = redis.StrictRedis(host='localhost', port=6379, db=0)
 
 def restartCelery():
     cmd = 'pkill -9 celery'
@@ -51,47 +51,47 @@ def train(self, imagePath):
 
         zipOutput(directoryName)
 
-        create_time = os.path.getctime(f'../models/{directoryName}/output_graph.pb')
-        create_timestamp = datetime.fromtimestamp(create_time)
+        # create_time = os.path.getctime(f'../models/{directoryName}/output_graph.pb')
+        # create_timestamp = datetime.fromtimestamp(create_time)
 
-        dbPath = '../db/{}'.format(directoryName)
+        # dbPath = '../db/{}'.format(directoryName)
 
-        downloadPath = '../output/{}'.format(directoryName)
+        # downloadPath = '../output/{}'.format(directoryName)
 
-        train_request_id = train.request.id
+        # train_request_id = train.request.id
 
-        dbPath_class = os.listdir(dbPath)
+        # dbPath_class = os.listdir(dbPath)
 
-        train_information = {}
+        # train_information = {}
 
-        train_information[train_request_id]={}
+        # train_information[train_request_id]={}
 
-        train_information[train_request_id]['createtime']=f'{create_timestamp}'
+        # train_information[train_request_id]['createtime']=f'{create_timestamp}'
 
-        train_information[train_request_id]['modelName']=directoryName
+        # train_information[train_request_id]['modelName']=directoryName
 
-        train_information[train_request_id]['info']={}
+        # train_information[train_request_id]['info']={}
 
-        train_information[train_request_id]['info']['modelPath']=downloadPath
+        # train_information[train_request_id]['info']['modelPath']=downloadPath
 
-        train_information[train_request_id]['info']['classes']=dbPath_class
+        # train_information[train_request_id]['info']['classes']=dbPath_class
 
-        train_information[train_request_id]['info']['images']={}
+        # train_information[train_request_id]['info']['images']={}
 
-        for i in dbPath_class:
-            dbfile = os.listdir(f'{dbPath}/{i}')
-            A = []
-            for j in dbfile:
-                A.append(f'{dbPath}/{i}/{j}')
-            train_information[train_request_id]["info"]["images"][i]=A
+        # for i in dbPath_class:
+        #     dbfile = os.listdir(f'{dbPath}/{i}')
+        #     A = []
+        #     for j in dbfile:
+        #         A.append(f'{dbPath}/{i}/{j}')
+        #     train_information[train_request_id]["info"]["images"][i]=A
 
-        print(train_information)
+        # print(train_information)
 
-        rd.set("train_information", json.dumps(train_information))
+        # rd.set("train_information", json.dumps(train_information))
 
-        train_information_rd_get=json.loads(rd.get("train_information"))
+        # train_information_rd_get=json.loads(rd.get("train_information"))
 
-        print(train_information_rd_get[train_request_id]['info']['images']['Class 1'])
+        # print(train_information_rd_get[train_request_id]['info']['images']['Class 1'])
 
         return {'success': True}
     except Exception as e:

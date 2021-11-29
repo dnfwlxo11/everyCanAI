@@ -38,6 +38,8 @@ router.post('/train', async (req, res, next) => {
         'images': images
     };
 
+    console.log(sendData);
+
     let trainResult = await api({
         method: 'POST',
         data: sendData,

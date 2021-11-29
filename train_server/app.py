@@ -61,8 +61,9 @@ def saveTrainImage(proj, images):
     for i in images.keys():
         if not os.path.exists('./db/{}/{}'.format(proj, i)):
             os.makedirs('./db/{}/{}'.format(proj, i))
+
         for j in images[i]:
-            url = 'http://localhost:3000/images/{}/{}/{}'.format(proj, i, j)
+            url = 'http://192.168.0.106:3000/images/{}/{}/{}'.format(proj, i, j)
             savePath = './db/{}/{}/{}'.format(proj, i, j)
             res = requests.get(url)
             image = Image.open(BytesIO(res.content)).convert('RGB')
@@ -142,11 +143,8 @@ def modelInfo():
 def modelTrain():
     if request.method == 'POST':
         try:
-            print('요청옴')
             data = request.get_json()
             saveTrainImage(data['proj'], data['images'])
-
-            print(data['proj'])
 
             result = train.delay(data['proj'])
 
