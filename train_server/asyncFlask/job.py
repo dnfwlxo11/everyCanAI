@@ -9,6 +9,9 @@ import os
 import shutil
 import json
 from datetime import datetime
+from PIL import Image
+from io import BytesIO
+import requests
 
 BROKER_URL = 'redis://daein_redis/0'
 CELERY_RESULT_BACKEND = 'redis://daein_redis/0'
