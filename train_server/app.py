@@ -4,11 +4,14 @@ from flask import Flask, request, send_file, render_template, current_app
 import inference
 import base64
 import os
-import time
+import time, requests
 from flask_cors import CORS
 from asyncFlask.job import train
 import shutil
 import random
+import json
+from PIL import Image
+from io import BytesIO
 
 # os.chdir('/app/server')
 
@@ -50,6 +53,20 @@ def makeDirectory(files):
                 f.write(image)
 
     return {'path': './db/{}'.format(dirName)}
+
+def saveTrainImage(proj, images):
+    if not os.path.exists('./db/{}'.format(proj)):
+        os.makedirs('./db/{}'.format(proj))
+    
+    for i in images.keys():
+        if not os.path.exists('./db/{}/{}'.format(proj, i)):
+            os.makedirs('./db/{}/{}'.format(proj, i))
+        for j in images[i]:
+            url = 'http://localhost:3000/images/{}/{}/{}'.format(proj, i, j)
+            savePath = './db/{}/{}/{}'.format(proj, i, j)
+            res = requests.get(url)
+            image = Image.open(BytesIO(res.content)).convert('RGB')
+            image.save(savePath)
 
 @app.route('/')
 def index():
@@ -125,12 +142,14 @@ def modelInfo():
 def modelTrain():
     if request.method == 'POST':
         try:
-            imagePath = request.get_json()['path']
+            data = request.get_json()
+            saveTrainImage(data['proj'], data['images'])
 
-            result = train.delay(imagePath)
-            print(result)
+            print(data['proj'])
 
-            return {'success': True, 'msg': '학습 요청을 완료했습니다.', 'job_id': str(result)}
+            result = train.delay(data['proj'])
+
+            return {'success': True, 'msg': '학습 요청을 완료했습니다.', 'job_id': result}
         except Exception as e:
             return {'success': False, 'error': e}
 
@@ -182,4 +201,4 @@ def getImage():
             return {'success': False, 'msg': '추론도중 에러가 발생했습니다.', 'error': e}
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=False)
+    app.run(host='0.0.0.0', port=5000, debug=True)

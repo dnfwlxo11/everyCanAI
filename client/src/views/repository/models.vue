@@ -66,6 +66,7 @@ export default {
         async loadModels() {
             this.isProgress = true
             let res = await axios.get('/node/models')
+            console.log(res)
             this.models = res['data']['models']
             this.isProgress = false
         },

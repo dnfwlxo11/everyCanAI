@@ -10,7 +10,7 @@ services:
     ports:
       - "16005:5000"
     environment:
-      - BRANCH_NAME=master
+      - BRANCH_NAME=daein
     volumes:
       - ./flask/app/models:/app/server/models
       - ./flask/app/output:/app/server/output

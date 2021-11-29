@@ -16,16 +16,12 @@ const storage = multer.diskStorage({
     }
 });
 
-router.get('/images/:projId', (req, res, next) => {
-    
-});
-
 router.post('/upload', (req, res, next) => {
     try {
         let className = req.body['classes'];
         let images = req.body;
-        let time = (new Date).getTime();
-        let savePath = path.join(__dirname, '..', 'uploads', time.toString());
+        let time = (new Date).getTime().toString();
+        let savePath = path.join(__dirname, '..', 'uploads', time);
 
         if (!fs.existsSync(savePath)) fs.mkdirSync(savePath);
 
@@ -40,7 +36,7 @@ router.post('/upload', (req, res, next) => {
             }
         });
 
-        res.status(200).json({ 'success': true, 'path': path.join('..', 'uploads', time.toString()) });
+        res.status(200).json({ 'success': true, 'path': time });
     } catch(e) {
         console.log(e);
         res.status(200).json({ 'success': false, e });

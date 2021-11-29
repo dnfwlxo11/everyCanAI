@@ -298,23 +298,25 @@
 
                 let res = await axios.post('/node/image/upload', uploadFiles)
 
-                console.log(res)
-                console.log(this.imagePath)
-
                 if (res['data']['success']) {
-                    // this.isDisabled = false
+                    this.isDisabled = false
                     this.isProgress = false
                     this.imagePath = res['data']['path']
                 } else {
                     this.isProgress = false
-                    // this.$router.push('/models')
+                    this.$router.push('/models')
                 }
             },
 
             async trainImage() {
-                let res = await axios.post('/node/train', this.imagePath)
-
+                console.log(this.imagePath)
+                let res = await axios.post('/node/models/train', {
+                    'proj': this.imagePath
+                })
+                console.log(res)
                 this.isProgress = true
+
+                console.log(res)
 
                 if (res['data']['success']) {
                     this.isDisabled = false
