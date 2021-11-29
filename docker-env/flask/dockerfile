@@ -20,7 +20,7 @@ COPY ./app /app
 
 EXPOSE 5000
 
-RUN pip3 install -r server/requirements.txt
+RUN pip3 install -r train_server/requirements.txt
 
 RUN chmod +x ./entrypoint.sh
 RUN chmod +x ./celery.sh

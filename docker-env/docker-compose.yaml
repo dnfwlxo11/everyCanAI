@@ -12,9 +12,9 @@ services:
     environment:
       - BRANCH_NAME=daein
     volumes:
-      - ./flask/app/models:/app/server/models
-      - ./flask/app/output:/app/server/output
-      - ./flask/app/db:/app/server/db
+      - ./flask/app/models:/app/train_server/models
+      - ./flask/app/output:/app/train_server/output
+      - ./flask/app/db:/app/train_server/db
   redis:
     image: redis
     restart: always

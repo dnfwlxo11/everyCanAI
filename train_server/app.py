@@ -13,7 +13,7 @@ import json
 from PIL import Image
 from io import BytesIO
 
-os.chdir('/app/server')
+os.chdir('/app/train_server')
 
 app = Flask(__name__, static_folder='./static/dist', template_folder='./static/dist', static_url_path='')
 app.config.from_object(__name__)
@@ -142,6 +142,7 @@ def modelInfo():
 def modelTrain():
     if request.method == 'POST':
         try:
+            print('요청옴')
             data = request.get_json()
             saveTrainImage(data['proj'], data['images'])
 
