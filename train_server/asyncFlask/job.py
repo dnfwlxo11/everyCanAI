@@ -22,12 +22,25 @@ def restartCelery():
     cmd = 'celery multi start -A job worker --loglevel=debug --logfile="./%n%I.log" --pidfile="./%n.pid" --autoscale=2,1 --max-tasks-per-child=1'
     subprocess.call(shlex.split(cmd))
 
+def saveTrainImage(proj, images):
+    if not os.path.exists('./db/{}'.format(proj)):
+        os.makedirs('./db/{}'.format(proj))
+    
+    for i in images.keys():
+        if not os.path.exists('./db/{}/{}'.format(proj, i)):
+            os.makedirs('./db/{}/{}'.format(proj, i))
+
+        for j in images[i]:
+            url = 'http://192.168.0.106:3000/images/{}/{}/{}'.format(proj, i, j)
+            savePath = './db/{}/{}/{}'.format(proj, i, j)
+            res = requests.get(url)
+            image = Image.open(BytesIO(res.content)).convert('RGB')
+            image.save(savePath)
+
 def zipOutput(directoryName):
     try:
         modelPath = '../models/{}'.format(directoryName)
         downloadPath = '../output/{}'.format(directoryName)
-
-        print(modelPath, downloadPath, 'test')
 
         if not directoryName in os.listdir('../output'):
             progressFilePath = os.path.join(downloadPath, 'zipping.txt')
@@ -43,11 +56,11 @@ def zipOutput(directoryName):
         f.close()
 
 @app.task(name="train", bind=True, max_retries=5, soft_time_limit=600)
-def train(self, imagePath):
+def train(self, directoryName, imagePath):
     try:
         result = retrain.startTrain(imagePath)
 
-        directoryName = imagePath.split('/')[2]
+        saveTrainImage(directoryName, imagePath)
 
         zipOutput(directoryName)
 

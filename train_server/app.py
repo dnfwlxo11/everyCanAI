@@ -54,21 +54,6 @@ def makeDirectory(files):
 
     return {'path': './db/{}'.format(dirName)}
 
-def saveTrainImage(proj, images):
-    if not os.path.exists('./db/{}'.format(proj)):
-        os.makedirs('./db/{}'.format(proj))
-    
-    for i in images.keys():
-        if not os.path.exists('./db/{}/{}'.format(proj, i)):
-            os.makedirs('./db/{}/{}'.format(proj, i))
-
-        for j in images[i]:
-            url = 'http://192.168.0.106:3000/images/{}/{}/{}'.format(proj, i, j)
-            savePath = './db/{}/{}/{}'.format(proj, i, j)
-            res = requests.get(url)
-            image = Image.open(BytesIO(res.content)).convert('RGB')
-            image.save(savePath)
-
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -144,9 +129,8 @@ def modelTrain():
     if request.method == 'POST':
         try:
             data = request.get_json()
-            saveTrainImage(data['proj'], data['images'])
-
-            result = train.delay(data['proj'])
+            
+            result = train.delay(data['proj'], data['images'])
 
             return {'success': True, 'msg': '학습 요청을 완료했습니다.', 'job_id': result}
         except Exception as e:

@@ -586,14 +586,13 @@ def main():
     print('error', e)
     return {'success': False, 'msg': '학습 중 에러가 발생했습니다.', 'error': e}
 
-def startTrain(imagePath):
-  directoryName = imagePath.split('/')[2]
+def startTrain(directoryName):
 
   if not os.path.exists('./models/{}'.format(directoryName)):
     os.makedirs('./models/{}'.format(directoryName))
 
   FLAGS['model_graphdef'] = directoryName
-  FLAGS['image_dir'] = imagePath
+  FLAGS['image_dir'] = './db/{}'.format(directoryName)
   FLAGS['output_graph'] = './models/{}/output_graph.pb'.format(directoryName)
   FLAGS['output_labels'] = './models/{}/output_labels.txt'.format(directoryName)
   FLAGS['summaries_dir'] = './models/{}/retrain_logs'.format(directoryName)
