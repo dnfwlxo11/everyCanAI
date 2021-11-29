@@ -5,8 +5,8 @@ const path = require('path');
 const router = express.Router();
 
 const api = axios.create({
-    baseURL: 'http://localhost:5000',
-    timeout: 1000
+    baseURL: 'http://localhost:16005',
+    timeout: 60000
 });
 
 /* GET home page. */

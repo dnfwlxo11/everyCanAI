@@ -11,11 +11,11 @@ from PIL import Image
 from io import BytesIO
 import requests
 
-BROKER_URL = 'redis://localhost:16006/0'
-CELERY_RESULT_BACKEND = 'redis://localhost:16006/0'
+BROKER_URL = 'redis://daein_redis/0'
+CELERY_RESULT_BACKEND = 'redis://daein_redis/0'
 
 app = Celery('job', broker=BROKER_URL, backend=CELERY_RESULT_BACKEND)
-rd = redis.StrictRedis(host='localhost', port=16006, db=0)
+rd = redis.StrictRedis(host='localhost', port=6379, db=0)
 
 def restartCelery():
     cmd = 'pkill -9 celery'
