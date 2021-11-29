@@ -19,7 +19,3 @@ celery multi start -A job worker --loglevel=debug --logfile="./%n%I.log" --pidfi
 
 cd /app
 python3 /app/server/app.py
-
-# cd /app/server/asyncFlask
-
-# celery -A job worker --loglevel=info

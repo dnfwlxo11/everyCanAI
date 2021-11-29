@@ -1,7 +1,7 @@
 FROM ubuntu:20.04
 
-ENV GIT_USER=LVturtle
-ENV GIT_ACCESS_KEY=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
+ENV GIT_USER=dnfwlxo11
+ENV GIT_ACCESS_KEY=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
 
 # 패키지 설치 중 상호작용 방지
 ARG DEBIAN_FRONTEND=noninteractive

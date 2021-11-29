@@ -14,7 +14,7 @@ BROKER_URL = 'redis://daein_redis/0'
 CELERY_RESULT_BACKEND = 'redis://daein_redis/0'
 
 app = Celery('job', broker=BROKER_URL, backend=CELERY_RESULT_BACKEND)
-rd = redis.StrictRedis(host='redis', port=6379, db=0)
+rd = redis.StrictRedis(host='localhost', port=16006, db=0)
 
 def restartCelery():
     cmd = 'pkill -9 celery'
