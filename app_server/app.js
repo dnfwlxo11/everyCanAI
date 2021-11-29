@@ -18,7 +18,7 @@ app.set('view engine', 'jade');
 
 app.use(logger('dev'));
 app.use(express.json({limit: '1024mb'})); 
-app.use(express.urlencoded({limit: '1024mb', extended: true}));
+app.use(express.urlencoded({limit: '1024mb', extended: false}));
 app.use(cookieParser());
 
 app.use(express.static(path.join(__dirname, 'public')));
@@ -30,7 +30,7 @@ app.use('/node/models', require('./routes/model'));
 app.use('/node', require('./routes/index'));
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use((req, res, next) => {
   next(createError(404));
 });
 

@@ -233,31 +233,31 @@
                 this.isDisabledClass = false
             },
 
-            // convertFiles() {
-            //     let result = {}
-
-            //     // 클래스명도 함께
-            //     result['classes'] = this.classes
-
-            //     // 첨부 파일 정리
-            //     this.fileList.forEach((item, idx) => {
-            //         result[this.classes[idx]] = item
-            //     })
-
-            //     return result
-            // },
-
             convertFiles() {
-                let formData = new FormData()
+                let result = {}
 
-                this.classes.forEach((value, idx) => {
-                    this.fileList[idx].forEach((item, idx) => {
-                        formData.append(`${value}`, item)
-                    })
+                // 클래스명도 함께
+                result['classes'] = this.classes
+
+                // 첨부 파일 정리
+                this.fileList.forEach((item, idx) => {
+                    result[this.classes[idx]] = item
                 })
 
-                return formData
+                return result
             },
+
+            // convertFiles() {
+            //     let formData = new FormData()
+
+            //     this.classes.forEach((value, idx) => {
+            //         this.fileList[idx].forEach((item, idx) => {
+            //             formData.append(value, item)
+            //         })
+            //     })
+
+            //     return formData
+            // },
 
             uploadImageCheck() {
                 let canTrain = true
@@ -296,18 +296,15 @@
 
                 this.isProgress = true
 
-                let res = await axios.post('/node/image/upload', uploadFiles, {
-                    headers: {
-                        'Content-Type': 'multipart/form-data'
-                    }
-                })
+                let res = await axios.post('/node/image/upload', uploadFiles)
 
                 console.log(res)
+                console.log(this.imagePath)
 
                 if (res['data']['success']) {
                     // this.isDisabled = false
                     this.isProgress = false
-                    // this.imagePath = res['data']['path']
+                    this.imagePath = res['data']['path']
                 } else {
                     this.isProgress = false
                     // this.$router.push('/models')
