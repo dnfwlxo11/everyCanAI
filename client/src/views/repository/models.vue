@@ -88,11 +88,12 @@ export default {
         async deleteModel(fileName) {
             this.isProgress = true
 
-            let res = await axios.post(`/node/delete/${fileName}`)
+            let res = await axios.post(`/node/models/delete/${fileName}`)
 
             if (res.data['success']) {
                 this.isProgress = false
                 console.log('삭제 성공')
+                this.loadModels()
             } else {
                 this.isProgress = false
                 console.log('삭제 실패')

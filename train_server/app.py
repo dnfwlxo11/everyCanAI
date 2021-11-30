@@ -8,6 +8,8 @@ import time
 from flask_cors import CORS
 from asyncFlask.job import train
 import random
+import shutil
+import json
 
 os.chdir('/app/train_server')
 
@@ -124,14 +126,9 @@ def modelInfo():
 def modelTrain():
     if request.method == 'POST':
         try:
-            print('요청 왔으')
             data = request.get_json()
-            print('요청 값 읽었으')
 
-            print('celery에 값 넣는다')
             result = train.delay(data['proj'], data['images'])
-            print('celery 갔다왔어')
-            print(result)
 
             return {'success': True, 'msg': '학습 요청을 완료했습니다.', 'job_id': str(result)}
         except Exception as e:
@@ -154,27 +151,33 @@ def downloadModel(filename):
 def deleteModel(filename):
     if request.method == 'POST':
         try:
-            os.rmdir('./db/{}'.format(filename))
-            os.rmdir('./models/{}'.format(filename))
-            os.rmdir('./output/{}'.format(filename))
+            shutil.rmtree('./db/{}'.format(filename))
+            shutil.rmtree('./models/{}'.format(filename))
+            shutil.rmtree('./output/{}'.format(filename))
 
             return {'success': True, 'msg': '{} 프로젝트의 모델을 삭제했습니다.'.format(filename)}
         except Exception as e:
+            print(e)
             return {'success': False, 'error': e}
 
 @app.route('/api/inference', methods=['POST'])
 def getImage():
     if request.method == 'POST':
         try:
+            reqData = json.loads(request.get_data())
+
             # base64 버전
-            # data = request.get_data().decode('utf-8').replace('data:image/png;base64,', '')
-            # data = base64.b64decode(data)
+            # data = reqData['file'].decode('utf-8').replace('data:image/png;base64,', '')
+            # print(data)
+            data = base64.b64decode(reqData['file'])
+
+            model = reqData['model']
 
             # blob 버전
-            data = request.files['file'].read()
+            # data = request.files['file'].read()
 
-            model = request.form.get('model')
-            print(model)
+            # model = request.form.get('model')
+            # print(model)
 
             predict = inference.run_inference_on_image(data, model)
             

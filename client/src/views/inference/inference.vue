@@ -133,18 +133,21 @@
             },
 
             async inference() {
+                if (this.file == null) return;
+
                 let bodyForm = new FormData()
-                bodyForm.append('file', this.file)
+                bodyForm.append('files', this.file)
                 bodyForm.append('model', this.selectModel == 'base' ? 'base' : this.models[this.selectModel]['name'])
-                console.log(this.selectModel)
 
                 this.isProgress = true
 
-                let res = await axios.post('/node/inference', bodyForm, {
+                let res = await axios.post('/node/models/inference', bodyForm, {
                     header: {
                         'Content-Type': 'multipart/form-data'
                     }
                 })
+
+                console.log(res);
 
                 if (res['data']['success']) {
                     this.isComplate = true
