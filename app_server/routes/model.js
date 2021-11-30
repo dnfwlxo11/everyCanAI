@@ -16,6 +16,8 @@ router.get('/', async (req, res, next) => {
         url: '/api/models'
     });
 
+    console.log(models)
+
     res.status(200).json(models['data']);
 });
 
@@ -38,17 +40,24 @@ router.post('/train', async (req, res, next) => {
         'images': images
     };
 
-    console.log(sendData);
+    try {
+        let trainResult = await api({
+            method: 'POST',
+            data: sendData,
+            url: '/api/train'
+        });
+    
+        console.log(trainResult);
 
-    let trainResult = await api({
-        method: 'POST',
-        data: sendData,
-        url: '/api/train'
-    });
+        res.status(200).json({ 'success': true });
+    } catch (e) {
+        console.log(e)
+        res.status(200).json({ 'success': false });
+    }
 
-    console.log(trainResult['data']);
+    
 
-    res.status(200).json({ 'success': true });
+    
 });
 
 module.exports = router;

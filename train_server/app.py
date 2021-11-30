@@ -124,13 +124,16 @@ def modelInfo():
 def modelTrain():
     if request.method == 'POST':
         try:
+            print('요청 왔으')
             data = request.get_json()
-            
-            print('넣었어')
-            result = train.delay(data['proj'], data['images'])
+            print('요청 값 읽었으')
 
-            print('끝났어')
-            return {'success': True, 'msg': '학습 요청을 완료했습니다.', 'job_id': result}
+            print('celery에 값 넣는다')
+            result = train.delay(data['proj'], data['images'])
+            print('celery 갔다왔어')
+            print(result)
+
+            return {'success': True, 'msg': '학습 요청을 완료했습니다.', 'job_id': str(result)}
         except Exception as e:
             return {'success': False, 'error': e}
 

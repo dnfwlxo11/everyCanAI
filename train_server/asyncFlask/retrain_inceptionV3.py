@@ -587,41 +587,35 @@ def main():
     print('error', e)
     return {'success': False, 'msg': '학습 중 에러가 발생했습니다.', 'error': e}
 
-def startTrain(imagePath):
-  try:
-    directoryName = imagePath.split('/')[2]
-    print(directoryName)
+def startTrain(directoryName):
+  print(directoryName)
 
-    if not os.path.exists('../models/{}'.format(directoryName)):
-      os.makedirs('../models/{}'.format(directoryName))
+  if not os.path.exists('../models/{}'.format(directoryName)):
+    os.makedirs('../models/{}'.format(directoryName))
 
-    FLAGS['model_graphdef'] = directoryName
-    FLAGS['image_dir'] = '../db/{}'.format(directoryName)
-    FLAGS['output_graph'] = '../models/{}/output_graph.pb'.format(directoryName)
-    FLAGS['output_labels'] = '../models/{}/output_labels.txt'.format(directoryName)
-    FLAGS['summaries_dir'] = '../models/{}/retrain_logs'.format(directoryName)
-    FLAGS['how_many_training_steps'] = 100
-    FLAGS['learning_rate'] = 0.01
-    FLAGS['testing_percentage'] = 10
-    FLAGS['validation_percentage'] = 10
-    FLAGS['eval_percentage'] = 10
-    FLAGS['eval_step_interval'] = 10
-    FLAGS['train_batch_size'] = 10
-    FLAGS['test_batch_size'] = -1
-    FLAGS['validation_batch_size'] = 10
-    FLAGS['print_misclassified_test_images'] = False
-    FLAGS['model_dir'] = '../models/imagenet'
-    FLAGS['bottleneck_dir'] = '../models/{}/bottleneck'.format(directoryName)
-    FLAGS['final_tensor_name'] = 'final_result'
-    FLAGS['flip_left_right'] = False
-    FLAGS['random_crop'] = 0
-    FLAGS['random_scale'] = 0
-    FLAGS['random_brightness'] = 0 
+  FLAGS['model_graphdef'] = directoryName
+  FLAGS['image_dir'] = '../db/{}'.format(directoryName)
+  FLAGS['output_graph'] = '../models/{}/output_graph.pb'.format(directoryName)
+  FLAGS['output_labels'] = '../models/{}/output_labels.txt'.format(directoryName)
+  FLAGS['summaries_dir'] = '../models/{}/retrain_logs'.format(directoryName)
+  FLAGS['how_many_training_steps'] = 100
+  FLAGS['learning_rate'] = 0.01
+  FLAGS['testing_percentage'] = 10
+  FLAGS['validation_percentage'] = 10
+  FLAGS['eval_percentage'] = 10
+  FLAGS['eval_step_interval'] = 10
+  FLAGS['train_batch_size'] = 10
+  FLAGS['test_batch_size'] = -1
+  FLAGS['validation_batch_size'] = 10
+  FLAGS['print_misclassified_test_images'] = False
+  FLAGS['model_dir'] = '../models/imagenet'
+  FLAGS['bottleneck_dir'] = '../models/{}/bottleneck'.format(directoryName)
+  FLAGS['final_tensor_name'] = 'final_result'
+  FLAGS['flip_left_right'] = False
+  FLAGS['random_crop'] = 0
+  FLAGS['random_scale'] = 0
+  FLAGS['random_brightness'] = 0 
 
-    result = main()
+  result = main()
 
-    return result
-  except Exception as e:
-    print(e)
-    f = open(os.path.join('../models', directoryName, 'error.txt'), 'w')
-    f.close()
+  return result

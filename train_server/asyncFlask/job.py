@@ -42,77 +42,28 @@ def saveTrainImage(proj, images):
     print('사진 다운 끝')
 
 def zipOutput(directoryName):
-    try:
-        modelPath = '../models/{}'.format(directoryName)
-        downloadPath = '../output/{}'.format(directoryName)
+    modelPath = '../models/{}'.format(directoryName)
+    downloadPath = '../output/{}'.format(directoryName)
 
-        if not directoryName in os.listdir('../output'):
-            progressFilePath = os.path.join(downloadPath, 'zipping.txt')
-            os.mkdir(downloadPath)
-            f = open(progressFilePath, 'w')
-            f.close()
-            shutil.make_archive(os.path.join(downloadPath, 'output'), 'zip', modelPath)
+    progressFilePath = os.path.join(downloadPath, 'zipping.txt')
 
-        os.remove(progressFilePath)
-    except Exception as e:
-        print(e)
-        f = open(os.path.join(modelPath, 'error.txt'), 'w')
+    if not directoryName in os.listdir('../output'):    
+        os.mkdir(downloadPath)
+        f = open(progressFilePath, 'w')
         f.close()
+        shutil.make_archive(os.path.join(downloadPath, 'output'), 'zip', modelPath)
+
+    os.remove(progressFilePath)
 
 @app.task(name="train")
 def train(directoryName, imagePath):
-    try:
-        print(directoryName, imagePath)
-        result = retrain.startTrain(imagePath)
+    print('작업 요청옴')
 
-        saveTrainImage(directoryName, imagePath)
+    saveTrainImage(directoryName, imagePath)
 
-        zipOutput(directoryName)
+    print(directoryName, imagePath)
+    result = retrain.startTrain(directoryName)
 
-        # create_time = os.path.getctime(f'../models/{directoryName}/output_graph.pb')
-        # create_timestamp = datetime.fromtimestamp(create_time)
+    zipOutput(directoryName)
 
-        # dbPath = '../db/{}'.format(directoryName)
-
-        # downloadPath = '../output/{}'.format(directoryName)
-
-        # train_request_id = train.request.id
-
-        # dbPath_class = os.listdir(dbPath)
-
-        # train_information = {}
-
-        # train_information[train_request_id]={}
-
-        # train_information[train_request_id]['createtime']=f'{create_timestamp}'
-
-        # train_information[train_request_id]['modelName']=directoryName
-
-        # train_information[train_request_id]['info']={}
-
-        # train_information[train_request_id]['info']['modelPath']=downloadPath
-
-        # train_information[train_request_id]['info']['classes']=dbPath_class
-
-        # train_information[train_request_id]['info']['images']={}
-
-        # for i in dbPath_class:
-        #     dbfile = os.listdir(f'{dbPath}/{i}')
-        #     A = []
-        #     for j in dbfile:
-        #         A.append(f'{dbPath}/{i}/{j}')
-        #     train_information[train_request_id]["info"]["images"][i]=A
-
-        # print(train_information)
-
-        # rd.set("train_information", json.dumps(train_information))
-
-        # train_information_rd_get=json.loads(rd.get("train_information"))
-
-        # print(train_information_rd_get[train_request_id]['info']['images']['Class 1'])
-
-        return {'success': True}
-    except Exception as e:
-        f = open(os.path.join('../models', directoryName, 'error.txt'), 'w')
-        f.close()
-        return {'success': False, 'error': e}
+    return {'success': True}
