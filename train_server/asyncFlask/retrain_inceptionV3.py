@@ -431,8 +431,6 @@ def add_evaluation_step(result_tensor, ground_truth_tensor):
 
 def main():
   try:
-    print(FLAGS)
-
     # TensorBoard의 summaries를 write할 directory를 설정한다.
     if tf.gfile.Exists(FLAGS['summaries_dir']):
       tf.gfile.DeleteRecursively(FLAGS['summaries_dir'])

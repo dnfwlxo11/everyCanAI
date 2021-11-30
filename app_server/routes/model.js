@@ -1,4 +1,5 @@
 const express = require('express');
+const http = require('http');
 const axios = require('axios');
 const fs = require('fs');
 const path = require('path');
@@ -54,10 +55,16 @@ router.post('/train', async (req, res, next) => {
         console.log(e)
         res.status(200).json({ 'success': false });
     }
+});
 
-    
+router.post('/download/:proj', (req, res, next) => {
+    console.log(req.params.proj);
 
-    
+    http.get({ path: `/api/download/${req.params.proj}`, hostname: 'localhost', port: 16005 }, (resp) => {
+        // res.setHeader('content-disposition', resp.headers['content-disposition']);
+        // res.setHeader('Content-Type', resp.headers['Content-Type']);
+        resp.pipe(res);
+    });
 });
 
 module.exports = router;

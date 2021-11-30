@@ -72,7 +72,7 @@ export default {
         },
 
         async downloadModel(fileName) {
-            let res = await axios.post(`/node/download/${fileName}`, {}, {
+            let res = await axios.post(`/node/models/download/${fileName}`, {}, {
                 responseType: 'arraybuffer'
             })
 

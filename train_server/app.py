@@ -137,9 +137,9 @@ def modelTrain():
         except Exception as e:
             return {'success': False, 'error': e}
 
-@app.route('/api/download/<filename>', methods=['POST'])
+@app.route('/api/download/<filename>', methods=['GET'])
 def downloadModel(filename):
-    if request.method == 'POST':
+    if request.method == 'GET':
         try:
             print(request.args, 'args')
             projectName = filename
