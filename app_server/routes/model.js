@@ -86,7 +86,6 @@ router.post('/delete/:proj', async (req, res, next) => {
     
         res.status(200).json({ 'success': deleteResult['data']['success'] });
     } catch (e) {
-        console.log(e);
         res.status(200).json({ 'success': false });
     }
 });
@@ -103,8 +102,6 @@ router.post('/inference', inferenece.single('files'), async (req, res, next) => 
                 'model': req.body['model']
             }
         });
-
-        console.log(inferenceResult['data']['predict'])
 
         res.status(200).json({ 'success': inferenceResult['data']['success'], 'predict': inferenceResult['data']['predict'] });
     } catch (e) {

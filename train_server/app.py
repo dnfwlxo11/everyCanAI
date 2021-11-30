@@ -114,14 +114,6 @@ def fileUpload():
         except Exception as e:
             return {'success': False, 'msg': '이미지 업로드 중 에러가 발생했습니다.', 'error': e}
 
-@app.route('/api/information', methods=['GET'])
-def modelInfo():
-    if request.method == 'GET':
-        try:
-            return {'success': True, 'info': '레이어 : ~~개, input: [224, 224, 3], 예시'}
-        except Exception as e:
-            return {'success': False}
-
 @app.route('/api/train', methods=['POST'])
 def modelTrain():
     if request.method == 'POST':

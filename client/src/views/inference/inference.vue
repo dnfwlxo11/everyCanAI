@@ -147,8 +147,6 @@
                     }
                 })
 
-                console.log(res);
-
                 if (res['data']['success']) {
                     this.isComplate = true
                     let tmp = res['data']['predict']

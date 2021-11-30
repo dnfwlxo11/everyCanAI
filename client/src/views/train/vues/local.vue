@@ -309,14 +309,11 @@
             },
 
             async trainImage() {
-                console.log(this.imagePath)
                 let res = await axios.post('/node/models/train', {
                     'proj': this.imagePath
                 })
-                console.log(res)
-                this.isProgress = true
 
-                console.log(res)
+                this.isProgress = true
 
                 if (res['data']['success']) {
                     this.isDisabled = false
