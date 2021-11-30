@@ -1,13 +1,10 @@
-FROM ubuntu:20.04
+FROM node:12
 
 ENV GIT_USER=dnfwlxo11
 ENV GIT_ACCESS_KEY=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
 
 # 패키지 설치 중 상호작용 방지
 ARG DEBIAN_FRONTEND=noninteractive
-
-RUN apt-get update
-RUN apt-get install -y python3 python3-pip python3-dev build-essential
 
 RUN apt-get install git -y
 
@@ -16,19 +13,14 @@ WORKDIR /app
 
 RUN git init
 RUN git config core.sparseCheckout true
-RUN echo "train_server/" >> .git/info/sparse-checkout
+RUN echo "app_server/" >> .git/info/sparse-checkout
 RUN git remote add -f origin https://${GIT_USER}:${GIT_ACCESS_KEY}@github.com/dnfwlxo11/flask_classification_sampleServer.git
 RUN git pull origin daein
-
-# RUN git clone -b daein https://${GIT_USER}:${GIT_ACCESS_KEY}@github.com/dnfwlxo11/flask_classification_sampleServer.git /app
 
 COPY ./app /app
 
 EXPOSE 5000
 
-RUN pip3 install -r train_server/requirements.txt
+RUN npm install
 
-RUN chmod +x ./entrypoint.sh
-RUN chmod +x ./celery.sh
-
-ENTRYPOINT ["./entrypoint.sh"]
+ENTRYPOINT ["pm2", "app.js"]

@@ -5,11 +5,6 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const cors = require("cors");
 
-const whitelist = ["http://localhost:8080/"];
-const corsOptions = {
-  origin: '*'
-};
-
 var app = express();
 
 // view engine setup

@@ -70,6 +70,13 @@ router.post('/train', async (req, res, next) => {
 });
 
 router.post('/download/:proj', (req, res, next) => {
+    // api({
+    //     method: 'GET',
+    //     url: `/api/download/${req.params.proj}`
+    // }).then((response) => {
+    //     response.pipe(res);
+    // });
+
     http.get({ path: `/api/download/${req.params.proj}`, hostname: 'localhost', port: 16005 }, (resp) => {
         // res.setHeader('content-disposition', resp.headers['content-disposition']);
         // res.setHeader('Content-Type', resp.headers['Content-Type']);

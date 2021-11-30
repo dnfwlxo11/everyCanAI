@@ -1,6 +1,17 @@
 version: '3'
 services:
-  app:
+  # web_server:
+  #   image: nodejs
+  #   restart: always
+  #   container_name: daein_web
+  #   build:
+  #     context: nodejs
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - "16004:3000"
+  #   volumes:
+  #     - ./nodejs/app/:/app/app_server/uploads
+  train_server:
     image: flask
     restart: always
     container_name: daein_classification
