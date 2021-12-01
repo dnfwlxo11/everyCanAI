@@ -1,4 +1,4 @@
 ### Everyone can make own classification model!
 
- ## 1. 모델 학습 프로세스
-![detection](https://user-images.githubusercontent.com/87048857/144156385-67b176cf-8307-4a82-9d57-3b8a56bde6ab.jpg)  
+ ## 1. 서비스 프로세스
+![detection](https://user-images.githubusercontent.com/32836490/144176518-ff0d9fcf-500f-4ba1-ac8d-b9d781c02c68.jpg)  
