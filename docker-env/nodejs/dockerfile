@@ -21,8 +21,8 @@ RUN git remote add -f origin https://${GIT_USER}:${GIT_ACCESS_KEY}@github.com/dn
 RUN git pull origin daein
 
 COPY ./app /app
-RUN mkdir /app/app_server/uploads
-RUN mkdir /app/app_server/inference
+RUN mkdir -p /app/app_server/uploads
+RUN mkdir -p /app/app_server/inference
 
 EXPOSE 3000
 

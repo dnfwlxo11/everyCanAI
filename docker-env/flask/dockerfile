@@ -23,9 +23,9 @@ RUN git pull origin daein
 # RUN git clone -b daein https://${GIT_USER}:${GIT_ACCESS_KEY}@github.com/dnfwlxo11/flask_classification_sampleServer.git /app
 
 COPY ./app /app/train_server
-RUN mkdir /app/train_server/db
-RUN mkdir /app/train_server/models
-RUN mkdir /app/train_server/output
+RUN mkdir -p /app/train_server/db
+RUN mkdir -p /app/train_server/models
+RUN mkdir -p /app/train_server/output
 COPY ./entrypoint.sh /app
 
 EXPOSE 5000
