@@ -163,7 +163,13 @@
             
             async loadModels() {
                 let res = await axios.get('/node/models')
-                this.models = res['data']['models']
+
+                let tmp = []
+                res['data']['models'].forEach((item, idx) => {
+                    if (item['progress'] == '학습 완료') tmp.push(item)
+                })
+
+                this.models = tmp
             },
         }
     }

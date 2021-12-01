@@ -24,46 +24,56 @@ def restartCelery():
     subprocess.call(shlex.split(cmd))
 
 def saveTrainImage(proj, images):
-    print('사진 다운 시작')
-    if not os.path.exists('../db/{}'.format(proj)):
-        os.makedirs('../db/{}'.format(proj))
-    
-    for i in images.keys():
-        if not os.path.exists('../db/{}/{}'.format(proj, i)):
-            os.makedirs('../db/{}/{}'.format(proj, i))
+    try:
+        if not os.path.exists('../db/{}'.format(proj)):
+            os.makedirs('../db/{}'.format(proj))
+        
+        for i in images.keys():
+            if not os.path.exists('../db/{}/{}'.format(proj, i)):
+                os.makedirs('../db/{}/{}'.format(proj, i))
 
-        for j in images[i]:
-            url = 'http://192.168.0.106:16004/images/{}/{}/{}'.format(proj, i, j)
-            savePath = '../db/{}/{}/{}'.format(proj, i, j)
-            res = requests.get(url)
-            image = Image.open(BytesIO(res.content)).convert('RGB')
-            image.save(savePath)
-
-    print('사진 다운 끝')
+            for j in images[i]:
+                url = 'http://192.168.0.106:16004/images/{}/{}/{}'.format(proj, i, j)
+                savePath = '../db/{}/{}/{}'.format(proj, i, j)
+                res = requests.get(url)
+                image = Image.open(BytesIO(res.content)).convert('RGB')
+                image.save(savePath)
+    except Exception as e:
+        print(e)
+        f = open(os.path.join('../db', proj, 'error.txt'), 'w')
+        f.close()
 
 def zipOutput(directoryName):
-    modelPath = '../models/{}'.format(directoryName)
-    downloadPath = '../output/{}'.format(directoryName)
+    try:
+        modelPath = '../models/{}'.format(directoryName)
+        downloadPath = '../output/{}'.format(directoryName)
 
-    progressFilePath = os.path.join(downloadPath, 'zipping.txt')
+        progressFilePath = os.path.join(downloadPath, 'zipping.txt')
 
-    if not directoryName in os.listdir('../output'):    
-        os.mkdir(downloadPath)
-        f = open(progressFilePath, 'w')
+        if not directoryName in os.listdir('../output'):    
+            os.mkdir(downloadPath)
+            f = open(progressFilePath, 'w')
+            f.close()
+            shutil.make_archive(os.path.join(downloadPath, 'output'), 'zip', modelPath)
+
+        os.remove(progressFilePath)
+    except Exception as e:
+        print(e)
+        f = open(os.path.join(modelPath, 'error.txt'), 'w')
         f.close()
-        shutil.make_archive(os.path.join(downloadPath, 'output'), 'zip', modelPath)
-
-    os.remove(progressFilePath)
 
 @app.task(name="train")
 def train(directoryName, imagePath):
-    print('작업 요청옴')
+    try:
+        saveTrainImage(directoryName, imagePath)
 
-    saveTrainImage(directoryName, imagePath)
+        print(directoryName, imagePath)
+        result = retrain.startTrain(directoryName)
 
-    print(directoryName, imagePath)
-    result = retrain.startTrain(directoryName)
+        zipOutput(directoryName)
 
-    zipOutput(directoryName)
-
-    return {'success': True}
+        return {'success': True}
+    except Exception as e:
+        print(e)
+        f = open(os.path.join('../models', directoryName, 'error.txt'), 'w')
+        f.close()
