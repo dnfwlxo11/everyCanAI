@@ -11,11 +11,11 @@ from PIL import Image
 from io import BytesIO
 import requests
 
-BROKER_URL = 'redis://daein_redis/0'
-CELERY_RESULT_BACKEND = 'redis://daein_redis/0'
+BROKER_URL = 'redis://192.168.0.106:16006/0'
+CELERY_RESULT_BACKEND = 'redis://192.168.0.106:16006/0'
 
 app = Celery('job', broker=BROKER_URL, backend=CELERY_RESULT_BACKEND)
-rd = redis.StrictRedis(host='localhost', port=6379, db=0)
+rd = redis.StrictRedis(host='192.168.0.106', port=16006, db=0)
 
 def restartCelery():
     cmd = 'pkill -9 celery'
@@ -33,7 +33,7 @@ def saveTrainImage(proj, images):
             os.makedirs('../db/{}/{}'.format(proj, i))
 
         for j in images[i]:
-            url = 'http://localhost:3000/images/{}/{}/{}'.format(proj, i, j)
+            url = 'http://12.168.0.106:3000/images/{}/{}/{}'.format(proj, i, j)
             savePath = '../db/{}/{}/{}'.format(proj, i, j)
             res = requests.get(url)
             image = Image.open(BytesIO(res.content)).convert('RGB')

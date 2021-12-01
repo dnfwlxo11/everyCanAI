@@ -19,7 +19,7 @@ const storage = multer.diskStorage({
 const inferenece = multer();
 
 const api = axios.create({
-    baseURL: 'http://localhost:5000',
+    baseURL: 'http://192.168.0.106:16005',
     timeout: 60000
 });
 
