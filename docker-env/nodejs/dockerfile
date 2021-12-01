@@ -14,13 +14,17 @@ WORKDIR /app
 RUN git init
 RUN git config core.sparseCheckout true
 RUN echo "app_server/" >> .git/info/sparse-checkout
+
+# RUN git clone -b daein https://${GIT_USER}:${GIT_ACCESS_KEY}@github.com/dnfwlxo11/flask_classification_sampleServer.git ./app_server
+
 RUN git remote add -f origin https://${GIT_USER}:${GIT_ACCESS_KEY}@github.com/dnfwlxo11/flask_classification_sampleServer.git
 RUN git pull origin daein
 
 COPY ./app /app
 
-EXPOSE 5000
+EXPOSE 3000
 
-RUN npm install
+RUN chmod +x ./entrypoint.sh
+RUN npm install pm2 -g
 
-ENTRYPOINT ["pm2", "app.js"]
+ENTRYPOINT ["./entrypoint.sh"]

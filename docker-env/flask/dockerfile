@@ -22,13 +22,13 @@ RUN git pull origin daein
 
 # RUN git clone -b daein https://${GIT_USER}:${GIT_ACCESS_KEY}@github.com/dnfwlxo11/flask_classification_sampleServer.git /app
 
-COPY ./app /app
+COPY ./app /app/train_server
+COPY ./entrypoint.sh /app
 
 EXPOSE 5000
 
 RUN pip3 install -r train_server/requirements.txt
 
 RUN chmod +x ./entrypoint.sh
-RUN chmod +x ./celery.sh
 
 ENTRYPOINT ["./entrypoint.sh"]
