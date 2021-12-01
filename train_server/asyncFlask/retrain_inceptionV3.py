@@ -586,8 +586,6 @@ def main():
     return {'success': False, 'msg': '학습 중 에러가 발생했습니다.', 'error': e}
 
 def startTrain(directoryName):
-  print(directoryName)
-
   if not os.path.exists('../models/{}'.format(directoryName)):
     os.makedirs('../models/{}'.format(directoryName))
 

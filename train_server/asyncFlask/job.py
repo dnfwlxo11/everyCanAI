@@ -33,7 +33,7 @@ def saveTrainImage(proj, images):
             os.makedirs('../db/{}/{}'.format(proj, i))
 
         for j in images[i]:
-            url = 'http://12.168.0.106:3000/images/{}/{}/{}'.format(proj, i, j)
+            url = 'http://192.168.0.106:16004/images/{}/{}/{}'.format(proj, i, j)
             savePath = '../db/{}/{}/{}'.format(proj, i, j)
             res = requests.get(url)
             image = Image.open(BytesIO(res.content)).convert('RGB')
