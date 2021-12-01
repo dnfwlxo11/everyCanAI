@@ -133,14 +133,15 @@
             },
 
             async inference() {
+                if (this.file == null) return;
+
                 let bodyForm = new FormData()
-                bodyForm.append('file', this.file)
+                bodyForm.append('files', this.file)
                 bodyForm.append('model', this.selectModel == 'base' ? 'base' : this.models[this.selectModel]['name'])
-                console.log(this.selectModel)
 
                 this.isProgress = true
 
-                let res = await axios.post('/api/inference', bodyForm, {
+                let res = await axios.post('/node/models/inference', bodyForm, {
                     header: {
                         'Content-Type': 'multipart/form-data'
                     }
@@ -161,7 +162,7 @@
             },
             
             async loadModels() {
-                let res = await axios.get('/api/models')
+                let res = await axios.get('/node/models')
                 this.models = res['data']['models']
             },
         }

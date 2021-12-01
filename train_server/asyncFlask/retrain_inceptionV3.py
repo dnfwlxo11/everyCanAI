@@ -3,7 +3,6 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import argparse
 from datetime import datetime
 import hashlib
 import os.path
@@ -432,8 +431,6 @@ def add_evaluation_step(result_tensor, ground_truth_tensor):
 
 def main():
   try:
-    print(FLAGS)
-
     # TensorBoard의 summaries를 write할 directory를 설정한다.
     if tf.gfile.Exists(FLAGS['summaries_dir']):
       tf.gfile.DeleteRecursively(FLAGS['summaries_dir'])
@@ -580,23 +577,23 @@ def main():
       with gfile.FastGFile(FLAGS['output_labels'], 'w') as f:
         f.write('\n'.join(image_lists.keys()) + '\n')
 
+      sess.close()
+
     print('학습 끝 함수')
     return {'success': True, 'msg': '학습이 완료되었습니다.', 'path': '{},{}'.format(FLAGS['output_graph'], FLAGS['output_labels'])}
   except Exception as e:
     print('error', e)
     return {'success': False, 'msg': '학습 중 에러가 발생했습니다.', 'error': e}
 
-def startTrain(imagePath):
-  directoryName = imagePath.split('/')[2]
-
-  if not os.path.exists('./models/{}'.format(directoryName)):
-    os.makedirs('./models/{}'.format(directoryName))
+def startTrain(directoryName):
+  if not os.path.exists('../models/{}'.format(directoryName)):
+    os.makedirs('../models/{}'.format(directoryName))
 
   FLAGS['model_graphdef'] = directoryName
-  FLAGS['image_dir'] = imagePath
-  FLAGS['output_graph'] = './models/{}/output_graph.pb'.format(directoryName)
-  FLAGS['output_labels'] = './models/{}/output_labels.txt'.format(directoryName)
-  FLAGS['summaries_dir'] = './models/{}/retrain_logs'.format(directoryName)
+  FLAGS['image_dir'] = '../db/{}'.format(directoryName)
+  FLAGS['output_graph'] = '../models/{}/output_graph.pb'.format(directoryName)
+  FLAGS['output_labels'] = '../models/{}/output_labels.txt'.format(directoryName)
+  FLAGS['summaries_dir'] = '../models/{}/retrain_logs'.format(directoryName)
   FLAGS['how_many_training_steps'] = 100
   FLAGS['learning_rate'] = 0.01
   FLAGS['testing_percentage'] = 10
@@ -607,8 +604,8 @@ def startTrain(imagePath):
   FLAGS['test_batch_size'] = -1
   FLAGS['validation_batch_size'] = 10
   FLAGS['print_misclassified_test_images'] = False
-  FLAGS['model_dir'] = './models/imagenet'
-  FLAGS['bottleneck_dir'] = './models/{}/bottleneck'.format(directoryName)
+  FLAGS['model_dir'] = '../models/imagenet'
+  FLAGS['bottleneck_dir'] = '../models/{}/bottleneck'.format(directoryName)
   FLAGS['final_tensor_name'] = 'final_result'
   FLAGS['flip_left_right'] = False
   FLAGS['random_crop'] = 0

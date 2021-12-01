@@ -247,6 +247,18 @@
                 return result
             },
 
+            // convertFiles() {
+            //     let formData = new FormData()
+
+            //     this.classes.forEach((value, idx) => {
+            //         this.fileList[idx].forEach((item, idx) => {
+            //             formData.append(value, item)
+            //         })
+            //     })
+
+            //     return formData
+            // },
+
             uploadImageCheck() {
                 let canTrain = true
 
@@ -283,7 +295,8 @@
                 var uploadFiles = this.convertFiles()
 
                 this.isProgress = true
-                let res = await axios.post('/api/upload', uploadFiles)
+
+                let res = await axios.post('/node/image/upload', uploadFiles)
 
                 if (res['data']['success']) {
                     this.isDisabled = false
@@ -296,7 +309,9 @@
             },
 
             async trainImage() {
-                let res = await axios.post('/api/train', this.imagePath)
+                let res = await axios.post('/node/models/train', {
+                    'proj': this.imagePath
+                })
 
                 this.isProgress = true
 

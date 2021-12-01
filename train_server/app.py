@@ -7,10 +7,11 @@ import os
 import time
 from flask_cors import CORS
 from asyncFlask.job import train
-import shutil
 import random
+import shutil
+import json
 
-os.chdir('/app/server')
+os.chdir('/app/train_server')
 
 app = Flask(__name__, static_folder='./static/dist', template_folder='./static/dist', static_url_path='')
 app.config.from_object(__name__)
@@ -113,30 +114,21 @@ def fileUpload():
         except Exception as e:
             return {'success': False, 'msg': '이미지 업로드 중 에러가 발생했습니다.', 'error': e}
 
-@app.route('/api/information', methods=['GET'])
-def modelInfo():
-    if request.method == 'GET':
-        try:
-            return {'success': True, 'info': '레이어 : ~~개, input: [224, 224, 3], 예시'}
-        except Exception as e:
-            return {'success': False}
-
 @app.route('/api/train', methods=['POST'])
 def modelTrain():
     if request.method == 'POST':
         try:
-            imagePath = request.get_json()['path']
+            data = request.get_json()
 
-            result = train.delay(imagePath)
-            print(result)
+            result = train.delay(data['proj'], data['images'])
 
             return {'success': True, 'msg': '학습 요청을 완료했습니다.', 'job_id': str(result)}
         except Exception as e:
             return {'success': False, 'error': e}
 
-@app.route('/api/download/<filename>', methods=['POST'])
+@app.route('/api/download/<filename>', methods=['GET'])
 def downloadModel(filename):
-    if request.method == 'POST':
+    if request.method == 'GET':
         try:
             print(request.args, 'args')
             projectName = filename
@@ -151,27 +143,33 @@ def downloadModel(filename):
 def deleteModel(filename):
     if request.method == 'POST':
         try:
-            os.rmdir('./db/{}'.format(filename))
-            os.rmdir('./models/{}'.format(filename))
-            os.rmdir('./output/{}'.format(filename))
+            shutil.rmtree('./db/{}'.format(filename))
+            shutil.rmtree('./models/{}'.format(filename))
+            shutil.rmtree('./output/{}'.format(filename))
 
             return {'success': True, 'msg': '{} 프로젝트의 모델을 삭제했습니다.'.format(filename)}
         except Exception as e:
+            print(e)
             return {'success': False, 'error': e}
 
 @app.route('/api/inference', methods=['POST'])
 def getImage():
     if request.method == 'POST':
         try:
+            reqData = json.loads(request.get_data())
+
             # base64 버전
-            # data = request.get_data().decode('utf-8').replace('data:image/png;base64,', '')
-            # data = base64.b64decode(data)
+            # data = reqData['file'].decode('utf-8').replace('data:image/png;base64,', '')
+            # print(data)
+            data = base64.b64decode(reqData['file'])
+
+            model = reqData['model']
 
             # blob 버전
-            data = request.files['file'].read()
+            # data = request.files['file'].read()
 
-            model = request.form.get('model')
-            print(model)
+            # model = request.form.get('model')
+            # print(model)
 
             predict = inference.run_inference_on_image(data, model)
             
@@ -182,4 +180,4 @@ def getImage():
             return {'success': False, 'msg': '추론도중 에러가 발생했습니다.', 'error': e}
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=False)
+    app.run(host='0.0.0.0', port=5000, debug=True)

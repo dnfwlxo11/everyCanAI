@@ -65,13 +65,13 @@ export default {
 
         async loadModels() {
             this.isProgress = true
-            let res = await axios.get('/api/models')
+            let res = await axios.get('/node/models')
             this.models = res['data']['models']
             this.isProgress = false
         },
 
         async downloadModel(fileName) {
-            let res = await axios.post(`/api/download/${fileName}`, {}, {
+            let res = await axios.post(`/node/models/download/${fileName}`, {}, {
                 responseType: 'arraybuffer'
             })
 
@@ -87,11 +87,12 @@ export default {
         async deleteModel(fileName) {
             this.isProgress = true
 
-            let res = await axios.post(`/api/delete/${fileName}`)
+            let res = await axios.post(`/node/models/delete/${fileName}`)
 
             if (res.data['success']) {
                 this.isProgress = false
                 console.log('삭제 성공')
+                this.loadModels()
             } else {
                 this.isProgress = false
                 console.log('삭제 실패')
