@@ -77,7 +77,7 @@ router.post('/download/:proj', (req, res, next) => {
     //     response.pipe(res);
     // });
 
-    http.get({ path: `/api/download/${req.params.proj}`, hostname: 'localhost', port: 16005 }, (resp) => {
+    http.get({ path: `/api/download/${req.params.proj}`, hostname: '192.168.0.106', port: 16005 }, (resp) => {
         // res.setHeader('content-disposition', resp.headers['content-disposition']);
         // res.setHeader('Content-Type', resp.headers['Content-Type']);
         resp.pipe(res);
