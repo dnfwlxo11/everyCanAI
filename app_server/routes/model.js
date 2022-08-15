@@ -19,7 +19,7 @@ const storage = multer.diskStorage({
 const inferenece = multer();
 
 const api = axios.create({
-    baseURL: 'http://192.168.0.106:16005',
+    baseURL: 'http://every-train-server:5000',
     timeout: 60000
 });
 
@@ -77,7 +77,7 @@ router.post('/download/:proj', (req, res, next) => {
     //     response.pipe(res);
     // });
 
-    http.get({ path: `/api/download/${req.params.proj}`, hostname: '192.168.0.106', port: 16005 }, (resp) => {
+    http.get({ path: `/api/download/${req.params.proj}`, hostname: 'every-train-server', port: 5000 }, (resp) => {
         // res.setHeader('content-disposition', resp.headers['content-disposition']);
         // res.setHeader('Content-Type', resp.headers['Content-Type']);
         resp.pipe(res);

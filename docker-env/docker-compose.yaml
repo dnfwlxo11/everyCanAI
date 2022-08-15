@@ -1,6 +1,6 @@
 version: '3'
 services:
-  web_server:
+  every-app-server:
     image: nodejs
     restart: always
     container_name: daein_web
@@ -8,12 +8,12 @@ services:
       context: nodejs
       dockerfile: Dockerfile
     ports:
-      - "16004:3000"
+      - "3000:3000"
     environment:
       - BRANCH_NAME=daein
     volumes:
       - ./nodejs/app/:/app/app_server/uploads
-  train_server:
+  every-train-server:
     image: flask
     restart: always
     container_name: daein_classification
@@ -21,14 +21,14 @@ services:
       context: flask
       dockerfile: Dockerfile
     ports:
-      - "16005:5000"
+      - "5000:5000"
     environment:
       - BRANCH_NAME=daein
     volumes:
       - ./flask/app/models:/app/train_server/models
       - ./flask/app/output:/app/train_server/output
       - ./flask/app/db:/app/train_server/db
-  redis:
+  every-redis-db:
     image: redis
     restart: always
     container_name: daein_redis
@@ -36,6 +36,6 @@ services:
       context: redis
       dockerfile: Dockerfile
     ports:
-      - "16006:6379"
+      - "6379:6379"
     volumes:
       - ./redis/app:/data
