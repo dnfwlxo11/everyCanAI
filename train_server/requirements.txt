@@ -8,3 +8,4 @@ Image==1.5.33
 celery==5.2.1
 redis==4.0.0
 watchdog==2.1.6
+protobuf==3.20.*
