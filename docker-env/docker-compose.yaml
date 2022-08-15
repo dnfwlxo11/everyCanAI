@@ -1,37 +1,37 @@
 version: '3'
 services:
   every-app-server:
-    image: nodejs
+    image: every-app-server
     restart: always
-    container_name: daein_web
+    container_name: every-app-server
     build:
       context: nodejs
       dockerfile: Dockerfile
     ports:
       - "3000:3000"
     environment:
-      - BRANCH_NAME=daein
+      - BRANCH_NAME=master
     volumes:
       - ./nodejs/app/:/app/app_server/uploads
   every-train-server:
-    image: flask
+    image: every-train-server
     restart: always
-    container_name: daein_classification
+    container_name: every-train-server
     build:
       context: flask
       dockerfile: Dockerfile
     ports:
       - "5000:5000"
     environment:
-      - BRANCH_NAME=daein
+      - BRANCH_NAME=master
     volumes:
       - ./flask/app/models:/app/train_server/models
       - ./flask/app/output:/app/train_server/output
       - ./flask/app/db:/app/train_server/db
   every-redis-db:
-    image: redis
+    image: every-redis-db
     restart: always
-    container_name: daein_redis
+    container_name: every-redis-db
     build:
       context: redis
       dockerfile: Dockerfile
