@@ -17,11 +17,11 @@ app.use(express.json({limit: '1024mb'}));
 app.use(express.urlencoded({limit: '1024mb', extended: false}));
 app.use(cookieParser());
 
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(history());
 app.use('/images', express.static(path.join(__dirname, 'uploads')));
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'inference')));
 app.use(cors()); // 옵션을 추가한 CORS 미들웨어 추가
-app.use(history());
 
 app.use('/node/image', require('./routes/image'));
 app.use('/node/models', require('./routes/model'));
