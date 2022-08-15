@@ -1,4 +1,7 @@
+const path = require('path');
+
 module.exports = {
+    outputDir: path.resolve(__dirname, '../app_server/public'),
     css: {
         loaderOptions: {
             sass: {
@@ -8,8 +11,8 @@ module.exports = {
             }        
         }
     },
-     // 개발 서버 설정
-     devServer: {
+    // 개발 서버 설정
+    devServer: {
         // 프록시 설정
         proxy: {
             // 프록시 요청을 보낼 api의 시작 부분
