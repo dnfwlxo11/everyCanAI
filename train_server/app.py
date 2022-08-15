@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
 from flask import Flask, request, send_file, render_template, current_app
-# import inference
+import inference
 import base64
 import os
 import time
 from flask_cors import CORS
-# from asyncFlask.job import train
+from asyncFlask.job import train
 import random
 import shutil
 import json
