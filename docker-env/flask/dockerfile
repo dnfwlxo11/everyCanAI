@@ -15,7 +15,7 @@ RUN git init
 RUN git config core.sparseCheckout true
 RUN echo "train_server/" >> .git/info/sparse-checkout
 RUN git remote add -f origin https://github.com/dnfwlxo11/everyCanAI.git
-RUN git pull origin master
+RUN git pull origin masters
 
 COPY ./app /app/train_server
 COPY ./entrypoint.sh /app
