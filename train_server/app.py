@@ -11,8 +11,6 @@ import random
 import shutil
 import json
 
-os.chdir('/app/train_server')
-
 app = Flask(__name__, static_folder='./static/dist', template_folder='./static/dist', static_url_path='')
 app.config.from_object(__name__)
 
