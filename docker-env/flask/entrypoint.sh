@@ -13,9 +13,6 @@ git pull origin ${BRANCH_NAME}
 
 echo "git ${BRANCH_NAME} pull completed"
 
-echo -e \nalias python="python3" >> ~/.bash_profile
-source ~/.bash_profile
+celery multi start -A job worker --workdir="./asyncFlask" --loglevel=debug --logfile="./%n%I.log" --pidfile="./%n.pid" --autoscale=2,1 --max-tasks-per-child=1
 
-celery multi start -A asyncFlask/job worker --loglevel=debug --logfile="./%n%I.log" --pidfile="./%n.pid" --autoscale=2,1 --max-tasks-per-child=1
-
-python app.py
+python3 app.py
