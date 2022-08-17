@@ -6,10 +6,6 @@ echo "git setting start"
 
 cd /app/app_server
 
-echo $pwd
-echo $ls
-echo ${cat app.js}
-
 git checkout ${BRANCH_NAME}
 
 git reset --hard HEAD

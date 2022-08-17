@@ -20,7 +20,7 @@ rd = redis.StrictRedis(host='localhost', port=6379, db=0)
 def restartCelery():
     cmd = 'pkill -9 celery'
     subprocess.call(shlex.split(cmd))
-    cmd = 'celery multi start -A job worker --loglevel=debug --logfile="./%n%I.log" --pidfile="./%n.pid" --autoscale=2,1 --max-tasks-per-child=1'
+    cmd = 'celery multi start -A job worker --loglevel=debug --workdir="./asyncFlask" --logfile="./%n%I.log" --pidfile="./%n.pid" --autoscale=2,1 --max-tasks-per-child=1'
     subprocess.call(shlex.split(cmd))
 
 def saveTrainImage(proj, images):
