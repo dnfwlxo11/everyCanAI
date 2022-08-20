@@ -5,7 +5,7 @@ import base64
 import os
 import time
 from flask_cors import CORS
-# from asyncFlask.job import train
+from asyncFlask.job import train
 import random
 import shutil
 import json
