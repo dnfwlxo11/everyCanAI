@@ -26,6 +26,7 @@ RUN git pull origin master
 
 COPY ./app /app/train_server
 COPY ./entrypoint.sh /app
+COPY ./model_download.py /app/train_server
 
 EXPOSE 5000
 
