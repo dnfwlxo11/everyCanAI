@@ -28,4 +28,8 @@ cat > pm2config.json << EOF
 }
 EOF
 
+cat > .env << EOF
+SERVER_PORT=4000
+EOF
+
 pm2-runtime start pm2config.json

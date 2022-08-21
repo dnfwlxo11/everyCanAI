@@ -5,6 +5,7 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const cors = require("cors");
 const history = require('connect-history-api-fallback');
+require('dotenv').config();
 
 const app = express();
 
