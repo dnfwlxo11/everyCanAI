@@ -28,4 +28,4 @@ cat > pm2config.json << EOF
 }
 EOF
 
-npm run start
+pm2-runtime start pm2config.json
